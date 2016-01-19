@@ -24,8 +24,8 @@ public:
     //  Destroy the sprk_ctx.
     ~QSprkCtx ();
 
-    //  Assign a block to the executor pool.
-    void assignBlock (QSprkBlock *block);
+    //  Assign a block to the executor pool, giving it a unique ID.
+    const QString assignBlock (QSprkBlock *block);
 
     //  Remove a block from the executor pool.
     void dropBlock (QSprkBlock *block);

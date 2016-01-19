@@ -37,7 +37,7 @@ sprk_ctx_new (void)
     sprk_ctx_t *self = (sprk_ctx_t *) zmalloc (sizeof (sprk_ctx_t));
     assert (self);
 
-    self->block_push = zsock_new_push ("inproc://blockpush");
+    self->block_push = zsock_new_push ("inproc://executors");
     self->work_pub = zsock_new_pub ("inproc://workpub");
     self->work_sub = zsock_new_sub ("inproc://worksub", "_");
     self->datasets = zlist_new ();
@@ -74,17 +74,29 @@ sprk_ctx_destroy (sprk_ctx_t **self_p)
     }
 }
 
-void
+const char *
 sprk_ctx_assign_block (sprk_ctx_t *self, sprk_block_t *block)
 {
   assert(self);
   assert(block);
 
+  sprk_msg_t *msg = sprk_msg_new ();
+  sprk_descriptor_t *descriptor = sprk_block_descriptor (block);
 
-  char buf[256];
-  snprintf(buf, 256, "ASSIGN %s", sprk_block_get_id(block));
-  zframe_t *msg = zframe_from (buf);
-  zframe_send (&msg, self->block_push, 0);
+  // TODO: wtf
+  const char *block_id = "abc123";
+
+  sprk_msg_set_id (msg, SPRK_MSG_ASSIGN_BLOCK);
+  sprk_msg_set_block_id (msg, block_id);
+  sprk_msg_set_descriptor_uri (msg, sprk_descriptor_uri (descriptor));
+  sprk_msg_set_descriptor_offset (msg, sprk_descriptor_offset (descriptor));
+  sprk_msg_set_descriptor_length (msg, sprk_descriptor_length (descriptor));
+  sprk_msg_set_descriptor_row_size (msg, sprk_descriptor_row_size (descriptor));
+
+  sprk_msg_send (msg, self->block_push);
+  sprk_msg_destroy (&msg);
+
+  return block_id;
 }
 
 //  --------------------------------------------------------------------------

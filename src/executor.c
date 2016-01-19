@@ -2,13 +2,13 @@
     executor - Executor which manages a set of blocks which are owned by a
 sprk_dataset. Delegates operations to its workers.
 
-    Copyright (c) the Contributors as noted in the AUTHORS file.       
-    This file is part of CZMQ, the high-level C binding for 0MQ:       
-    http://czmq.zeromq.org.                                            
-                                                                       
+    Copyright (c) the Contributors as noted in the AUTHORS file.
+    This file is part of CZMQ, the high-level C binding for 0MQ:
+    http://czmq.zeromq.org.
+
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/.           
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
     =========================================================================
 */
 
@@ -21,6 +21,7 @@ sprk_dataset. Delegates operations to its workers.
 */
 
 #include "sprk_classes.h"
+#include "sprk_block_manager.h"
 
 //  Structure of our actor
 
@@ -29,7 +30,9 @@ struct _executor_t {
     zpoller_t *poller;          //  Socket poller
     bool terminated;            //  Did caller ask us to quit?
     bool verbose;               //  Verbose logging enabled?
-    //  TODO: Declare properties
+
+    zsock_t *block_pull;
+    sprk_block_manager_t *block_manager;
 };
 
 
@@ -44,9 +47,14 @@ executor_new (zsock_t *pipe, void *args)
 
     self->pipe = pipe;
     self->terminated = false;
-    self->poller = zpoller_new (self->pipe, NULL);
 
-    //  TODO: Initialize properties
+    self->block_pull = zsock_new_pull ("inproc://executors");
+    assert (self->block_pull);
+
+    self->block_manager = sprk_block_manager_new ();
+    assert (self->block_manager);
+
+    self->poller = zpoller_new (self->pipe, self->block_pull, NULL);
 
     return self;
 }
@@ -62,7 +70,8 @@ executor_destroy (executor_t **self_p)
     if (*self_p) {
         executor_t *self = *self_p;
 
-        //  TODO: Free actor properties
+        zsock_destroy (&self->block_pull);
+        sprk_block_manager_destroy (&self->block_manager);
 
         //  Free object itself
         zpoller_destroy (&self->poller);
@@ -131,6 +140,35 @@ executor_recv_api (executor_t *self)
     }
 }
 
+void
+executor_assign_block (executor_t *self, sprk_msg_t *msg)
+{
+    sprk_msg_print (msg);
+    const char *block_id = sprk_msg_block_id (msg);
+    sprk_descriptor_t *descriptor = sprk_descriptor_new (
+        sprk_msg_descriptor_uri (msg), sprk_msg_descriptor_offset (msg),
+        sprk_msg_descriptor_length (msg), sprk_msg_descriptor_row_size (msg));
+    sprk_block_t *block = sprk_block_new (descriptor, zlist_new());
+    sprk_blockdata_t *blockdata = sprk_block_manager_read_and_store_block (
+        self->block_manager, block_id, &block);
+
+    printf ("looked up blockdata in manager (%s)\n",
+            (blockdata != NULL) ? "true" : "false");
+}
+
+
+void
+executor_handle_block_pull (executor_t *self)
+{
+    sprk_msg_t *msg = sprk_msg_new ();
+    int rc = sprk_msg_recv (msg, self->block_pull);
+    assert (rc == 0);
+
+    if (sprk_msg_id (msg) == SPRK_MSG_ASSIGN_BLOCK)
+        executor_assign_block (self, msg);
+
+    sprk_msg_destroy (&msg);
+}
 
 //  --------------------------------------------------------------------------
 //  This is the actor which runs in its own thread.
@@ -149,7 +187,9 @@ executor_actor (zsock_t *pipe, void *args)
        zsock_t *which = (zsock_t *) zpoller_wait (self->poller, 0);
        if (which == self->pipe)
           executor_recv_api (self);
-       //  Add other sockets when you need them.
+       else
+       if (which == self->block_pull)
+           executor_handle_block_pull (self);
     }
 
     executor_destroy (&self);

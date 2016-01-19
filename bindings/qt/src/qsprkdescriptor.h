@@ -18,10 +18,23 @@ public:
     QSprkDescriptor (sprk_descriptor_t *self, QObject *qObjParent = 0);
 
     //  Creates a new descriptor.
-    explicit QSprkDescriptor (QObject *qObjParent = 0);
+    //  Creates a new descriptor.
+    explicit QSprkDescriptor (const QString &uri, quint64 offset, quint64 length, quint32 rowSize, QObject *qObjParent = 0);
 
     //  Destroy the sprk_descriptor.
     ~QSprkDescriptor ();
+
+    //  
+    const QString uri ();
+
+    //  
+    quint64 offset ();
+
+    //  
+    quint64 length ();
+
+    //  
+    quint32 rowSize ();
 
     //  Self test of this class.
     static void test (bool verbose);

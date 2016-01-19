@@ -12,13 +12,15 @@
   </destructor>
 
   <method name = "assign_block">
-    Assign a block to the executor pool.
+    Assign a block to the executor pool, giving it a unique ID.
     <argument name = "block" type = "sprk_block" />
+    <return type = "string" />
   </method>
 
   <method name = "drop_block">
     Remove a block from the executor pool.
     <argument name = "block" type = "sprk_block" />
+    <return type = "nothing" />
   </method>
 
 </class>

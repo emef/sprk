@@ -23,12 +23,29 @@ extern "C" {
 //  @warning Please edit the model at "api/sprk_descriptor.xml" to make changes.
 //  @interface
 //  Creates a new descriptor.
+//  Creates a new descriptor.
 SPRK_EXPORT sprk_descriptor_t *
-    sprk_descriptor_new (void);
+    sprk_descriptor_new (const char *uri, uint64_t offset, uint64_t length, uint32_t row_size);
 
 //  Destroy the sprk_descriptor.
 SPRK_EXPORT void
     sprk_descriptor_destroy (sprk_descriptor_t **self_p);
+
+//  
+SPRK_EXPORT const char *
+    sprk_descriptor_uri (sprk_descriptor_t *self);
+
+//  
+SPRK_EXPORT uint64_t
+    sprk_descriptor_offset (sprk_descriptor_t *self);
+
+//  
+SPRK_EXPORT uint64_t
+    sprk_descriptor_length (sprk_descriptor_t *self);
+
+//  
+SPRK_EXPORT uint32_t
+    sprk_descriptor_row_size (sprk_descriptor_t *self);
 
 //  Self test of this class.
 SPRK_EXPORT void

@@ -31,6 +31,11 @@ struct _sprk_msg_t {
     int id;                             //  sprk_msg message ID
     byte *needle;                       //  Read/write pointer for serialization
     byte *ceiling;                      //  Valid upper limit for read pointer
+    char block_id [256];                //  block_id
+    char descriptor_uri [256];          //  descriptor_uri
+    uint64_t descriptor_offset;         //  descriptor_offset
+    uint64_t descriptor_length;         //  descriptor_length
+    uint32_t descriptor_row_size;       //  descriptor_row_size
 };
 
 //  --------------------------------------------------------------------------
@@ -254,10 +259,12 @@ sprk_msg_recv (sprk_msg_t *self, zsock_t *input)
     GET_NUMBER1 (self->id);
 
     switch (self->id) {
-        case SPRK_MSG_HELLO:
-            break;
-
-        case SPRK_MSG_WORLD:
+        case SPRK_MSG_ASSIGN_BLOCK:
+            GET_STRING (self->block_id);
+            GET_STRING (self->descriptor_uri);
+            GET_NUMBER8 (self->descriptor_offset);
+            GET_NUMBER8 (self->descriptor_length);
+            GET_NUMBER4 (self->descriptor_row_size);
             break;
 
         default:
@@ -291,6 +298,13 @@ sprk_msg_send (sprk_msg_t *self, zsock_t *output)
 
     size_t frame_size = 2 + 1;          //  Signature and message ID
     switch (self->id) {
+        case SPRK_MSG_ASSIGN_BLOCK:
+            frame_size += 1 + strlen (self->block_id);
+            frame_size += 1 + strlen (self->descriptor_uri);
+            frame_size += 8;            //  descriptor_offset
+            frame_size += 8;            //  descriptor_length
+            frame_size += 4;            //  descriptor_row_size
+            break;
     }
     //  Now serialize message into the frame
     zmq_msg_t frame;
@@ -301,6 +315,14 @@ sprk_msg_send (sprk_msg_t *self, zsock_t *output)
     size_t nbr_frames = 1;              //  Total number of frames to send
 
     switch (self->id) {
+        case SPRK_MSG_ASSIGN_BLOCK:
+            PUT_STRING (self->block_id);
+            PUT_STRING (self->descriptor_uri);
+            PUT_NUMBER8 (self->descriptor_offset);
+            PUT_NUMBER8 (self->descriptor_length);
+            PUT_NUMBER4 (self->descriptor_row_size);
+            break;
+
     }
     //  Now send the data frame
     zmq_msg_send (&frame, zsock_resolve (output), --nbr_frames? ZMQ_SNDMORE: 0);
@@ -317,12 +339,13 @@ sprk_msg_print (sprk_msg_t *self)
 {
     assert (self);
     switch (self->id) {
-        case SPRK_MSG_HELLO:
-            zsys_debug ("SPRK_MSG_HELLO:");
-            break;
-
-        case SPRK_MSG_WORLD:
-            zsys_debug ("SPRK_MSG_WORLD:");
+        case SPRK_MSG_ASSIGN_BLOCK:
+            zsys_debug ("SPRK_MSG_ASSIGN_BLOCK:");
+            zsys_debug ("    block_id='%s'", self->block_id);
+            zsys_debug ("    descriptor_uri='%s'", self->descriptor_uri);
+            zsys_debug ("    descriptor_offset=%ld", (long) self->descriptor_offset);
+            zsys_debug ("    descriptor_length=%ld", (long) self->descriptor_length);
+            zsys_debug ("    descriptor_row_size=%ld", (long) self->descriptor_row_size);
             break;
 
     }
@@ -372,15 +395,110 @@ sprk_msg_command (sprk_msg_t *self)
 {
     assert (self);
     switch (self->id) {
-        case SPRK_MSG_HELLO:
-            return ("HELLO");
-            break;
-        case SPRK_MSG_WORLD:
-            return ("WORLD");
+        case SPRK_MSG_ASSIGN_BLOCK:
+            return ("ASSIGN_BLOCK");
             break;
     }
     return "?";
 }
+
+//  --------------------------------------------------------------------------
+//  Get/set the block_id field
+
+const char *
+sprk_msg_block_id (sprk_msg_t *self)
+{
+    assert (self);
+    return self->block_id;
+}
+
+void
+sprk_msg_set_block_id (sprk_msg_t *self, const char *value)
+{
+    assert (self);
+    assert (value);
+    if (value == self->block_id)
+        return;
+    strncpy (self->block_id, value, 255);
+    self->block_id [255] = 0;
+}
+
+
+//  --------------------------------------------------------------------------
+//  Get/set the descriptor_uri field
+
+const char *
+sprk_msg_descriptor_uri (sprk_msg_t *self)
+{
+    assert (self);
+    return self->descriptor_uri;
+}
+
+void
+sprk_msg_set_descriptor_uri (sprk_msg_t *self, const char *value)
+{
+    assert (self);
+    assert (value);
+    if (value == self->descriptor_uri)
+        return;
+    strncpy (self->descriptor_uri, value, 255);
+    self->descriptor_uri [255] = 0;
+}
+
+
+//  --------------------------------------------------------------------------
+//  Get/set the descriptor_offset field
+
+uint64_t
+sprk_msg_descriptor_offset (sprk_msg_t *self)
+{
+    assert (self);
+    return self->descriptor_offset;
+}
+
+void
+sprk_msg_set_descriptor_offset (sprk_msg_t *self, uint64_t descriptor_offset)
+{
+    assert (self);
+    self->descriptor_offset = descriptor_offset;
+}
+
+
+//  --------------------------------------------------------------------------
+//  Get/set the descriptor_length field
+
+uint64_t
+sprk_msg_descriptor_length (sprk_msg_t *self)
+{
+    assert (self);
+    return self->descriptor_length;
+}
+
+void
+sprk_msg_set_descriptor_length (sprk_msg_t *self, uint64_t descriptor_length)
+{
+    assert (self);
+    self->descriptor_length = descriptor_length;
+}
+
+
+//  --------------------------------------------------------------------------
+//  Get/set the descriptor_row_size field
+
+uint32_t
+sprk_msg_descriptor_row_size (sprk_msg_t *self)
+{
+    assert (self);
+    return self->descriptor_row_size;
+}
+
+void
+sprk_msg_set_descriptor_row_size (sprk_msg_t *self, uint32_t descriptor_row_size)
+{
+    assert (self);
+    self->descriptor_row_size = descriptor_row_size;
+}
+
 
 
 //  --------------------------------------------------------------------------
@@ -415,8 +533,13 @@ sprk_msg_test (bool verbose)
     //  Encode/send/decode and verify each message type
     int instance;
     self = sprk_msg_new ();
-    sprk_msg_set_id (self, SPRK_MSG_HELLO);
+    sprk_msg_set_id (self, SPRK_MSG_ASSIGN_BLOCK);
 
+    sprk_msg_set_block_id (self, "Life is short but Now lasts for ever");
+    sprk_msg_set_descriptor_uri (self, "Life is short but Now lasts for ever");
+    sprk_msg_set_descriptor_offset (self, 123);
+    sprk_msg_set_descriptor_length (self, 123);
+    sprk_msg_set_descriptor_row_size (self, 123);
     //  Send twice
     sprk_msg_send (self, output);
     sprk_msg_send (self, output);
@@ -424,16 +547,11 @@ sprk_msg_test (bool verbose)
     for (instance = 0; instance < 2; instance++) {
         sprk_msg_recv (self, input);
         assert (sprk_msg_routing_id (self));
-    }
-    sprk_msg_set_id (self, SPRK_MSG_WORLD);
-
-    //  Send twice
-    sprk_msg_send (self, output);
-    sprk_msg_send (self, output);
-
-    for (instance = 0; instance < 2; instance++) {
-        sprk_msg_recv (self, input);
-        assert (sprk_msg_routing_id (self));
+        assert (streq (sprk_msg_block_id (self), "Life is short but Now lasts for ever"));
+        assert (streq (sprk_msg_descriptor_uri (self), "Life is short but Now lasts for ever"));
+        assert (sprk_msg_descriptor_offset (self) == 123);
+        assert (sprk_msg_descriptor_length (self) == 123);
+        assert (sprk_msg_descriptor_row_size (self) == 123);
     }
 
     sprk_msg_destroy (&self);

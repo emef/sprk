@@ -41,15 +41,19 @@ HEADERS += \
   $$SRCDIR/QmlSprkCtx.h \
   $$SRCDIR/QmlSprkDataset.h \
   $$SRCDIR/QmlSprkBlock.h \
+  $$SRCDIR/QmlSprkBlockdata.h \
   $$SRCDIR/QmlSprkDescriptor.h \
-  $$SRCDIR/QmlSprkTransform.h 
+  $$SRCDIR/QmlSprkTransform.h \
+  $$SRCDIR/QmlSprkBlockManager.h 
 
 SOURCES += \
   $$SRCDIR/QmlSprkCtx.cpp \
   $$SRCDIR/QmlSprkDataset.cpp \
   $$SRCDIR/QmlSprkBlock.cpp \
+  $$SRCDIR/QmlSprkBlockdata.cpp \
   $$SRCDIR/QmlSprkDescriptor.cpp \
-  $$SRCDIR/QmlSprkTransform.cpp 
+  $$SRCDIR/QmlSprkTransform.cpp \
+  $$SRCDIR/QmlSprkBlockManager.cpp 
 
 OBJECTS_DIR = $$BUILDDIR/.obj
 MOC_DIR     = $$BUILDDIR/.moc

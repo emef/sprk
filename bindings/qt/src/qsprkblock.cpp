@@ -17,9 +17,9 @@ QSprkBlock::QSprkBlock (sprk_block_t *self, QObject *qObjParent) : QObject (qObj
 
 ///
 //  Creates a new block
-QSprkBlock::QSprkBlock (const QString &blockId, QSprkDescriptor *descriptor, zlist_t *appliedTransforms, QObject *qObjParent) : QObject (qObjParent)
+QSprkBlock::QSprkBlock (QSprkDescriptor *descriptor, zlist_t *appliedTransforms, QObject *qObjParent) : QObject (qObjParent)
 {
-    this->self = sprk_block_new (blockId.toUtf8().data(), descriptor->self, appliedTransforms);
+    this->self = sprk_block_new (descriptor->self, appliedTransforms);
 }
 
 ///
@@ -39,9 +39,9 @@ void QSprkBlock::queueTransform (QSprkTransform *transform)
 
 ///
 //  
-const QString QSprkBlock::getId ()
+QSprkDescriptor * QSprkBlock::descriptor ()
 {
-    const QString rv = QString (sprk_block_get_id (self));
+    QSprkDescriptor *rv = new QSprkDescriptor (sprk_block_descriptor (self));
     return rv;
 }
 

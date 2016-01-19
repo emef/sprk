@@ -14,15 +14,19 @@ qsprk-uselib:!qsprk-buildlib {
                      $$PWD/qsprkctx.h \
                      $$PWD/qsprkdataset.h \
                      $$PWD/qsprkblock.h \
+                     $$PWD/qsprkblockdata.h \
                      $$PWD/qsprkdescriptor.h \
-                     $$PWD/qsprktransform.h
+                     $$PWD/qsprktransform.h \
+                     $$PWD/qsprkblockmanager.h
 
     SOURCES       += \
                      $$PWD/qsprkctx.cpp \
                      $$PWD/qsprkdataset.cpp \
                      $$PWD/qsprkblock.cpp \
+                     $$PWD/qsprkblockdata.cpp \
                      $$PWD/qsprkdescriptor.cpp \
-                     $$PWD/qsprktransform.cpp
+                     $$PWD/qsprktransform.cpp \
+                     $$PWD/qsprkblockmanager.cpp
 }
 
 win32 {

@@ -17,16 +17,22 @@ class QmlSprkDataset;
 class QmlSprkDatasetAttached;
 class QmlSprkBlock;
 class QmlSprkBlockAttached;
+class QmlSprkBlockdata;
+class QmlSprkBlockdataAttached;
 class QmlSprkDescriptor;
 class QmlSprkDescriptorAttached;
 class QmlSprkTransform;
 class QmlSprkTransformAttached;
+class QmlSprkBlockManager;
+class QmlSprkBlockManagerAttached;
 
 #include "QmlSprkCtx.h"
 #include "QmlSprkDataset.h"
 #include "QmlSprkBlock.h"
+#include "QmlSprkBlockdata.h"
 #include "QmlSprkDescriptor.h"
 #include "QmlSprkTransform.h"
+#include "QmlSprkBlockManager.h"
 
 class QmlSprkPlugin : public QQmlExtensionPlugin
 {
@@ -42,10 +48,14 @@ public:
         qmlRegisterType<QmlSprkDatasetAttached>();
         qmlRegisterType<QmlSprkBlock> (uri, 1, 0, "QmlSprkBlock");
         qmlRegisterType<QmlSprkBlockAttached>();
+        qmlRegisterType<QmlSprkBlockdata> (uri, 1, 0, "QmlSprkBlockdata");
+        qmlRegisterType<QmlSprkBlockdataAttached>();
         qmlRegisterType<QmlSprkDescriptor> (uri, 1, 0, "QmlSprkDescriptor");
         qmlRegisterType<QmlSprkDescriptorAttached>();
         qmlRegisterType<QmlSprkTransform> (uri, 1, 0, "QmlSprkTransform");
         qmlRegisterType<QmlSprkTransformAttached>();
+        qmlRegisterType<QmlSprkBlockManager> (uri, 1, 0, "QmlSprkBlockManager");
+        qmlRegisterType<QmlSprkBlockManagerAttached>();
     };
 };
 

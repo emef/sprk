@@ -31,11 +31,11 @@ QSprkCtx::~QSprkCtx ()
 }
 
 ///
-//  Assign a block to the executor pool.
-void QSprkCtx::assignBlock (QSprkBlock *block)
+//  Assign a block to the executor pool, giving it a unique ID.
+const QString QSprkCtx::assignBlock (QSprkBlock *block)
 {
-    sprk_ctx_assign_block (self, block->self);
-    
+    const QString rv = QString (sprk_ctx_assign_block (self, block->self));
+    return rv;
 }
 
 ///

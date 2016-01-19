@@ -20,14 +20,16 @@
 
 /*  These are the sprk_msg messages:
 
-    HELLO - 
-
-    WORLD - 
+    ASSIGN_BLOCK - 
+        block_id            string      
+        descriptor_uri      string      
+        descriptor_offset   number 8    
+        descriptor_length   number 8    
+        descriptor_row_size  number 4   
 */
 
 
-#define SPRK_MSG_HELLO                      1
-#define SPRK_MSG_WORLD                      2
+#define SPRK_MSG_ASSIGN_BLOCK               1
 
 #include <czmq.h>
 
@@ -77,6 +79,36 @@ void
     sprk_msg_set_id (sprk_msg_t *self, int id);
 const char *
     sprk_msg_command (sprk_msg_t *self);
+
+//  Get/set the block_id field
+const char *
+    sprk_msg_block_id (sprk_msg_t *self);
+void
+    sprk_msg_set_block_id (sprk_msg_t *self, const char *value);
+
+//  Get/set the descriptor_uri field
+const char *
+    sprk_msg_descriptor_uri (sprk_msg_t *self);
+void
+    sprk_msg_set_descriptor_uri (sprk_msg_t *self, const char *value);
+
+//  Get/set the descriptor_offset field
+uint64_t
+    sprk_msg_descriptor_offset (sprk_msg_t *self);
+void
+    sprk_msg_set_descriptor_offset (sprk_msg_t *self, uint64_t descriptor_offset);
+
+//  Get/set the descriptor_length field
+uint64_t
+    sprk_msg_descriptor_length (sprk_msg_t *self);
+void
+    sprk_msg_set_descriptor_length (sprk_msg_t *self, uint64_t descriptor_length);
+
+//  Get/set the descriptor_row_size field
+uint32_t
+    sprk_msg_descriptor_row_size (sprk_msg_t *self);
+void
+    sprk_msg_set_descriptor_row_size (sprk_msg_t *self, uint32_t descriptor_row_size);
 
 //  Self test of this class
 void

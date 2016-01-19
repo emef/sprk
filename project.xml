@@ -12,8 +12,10 @@
 
     <!-- block classes -->
     <class name = "sprk_block" />
+    <class name = "sprk_blockdata" />
     <class name = "sprk_descriptor" />
     <class name = "sprk_transform" />
+    <class name = "sprk_block_manager" />
 
     <!-- protocol -->
     <class name = "sprk_msg" />

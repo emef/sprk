@@ -32,7 +32,7 @@ public slots:
     void queueTransform (QmlSprkTransform *transform);
 
     //  
-    const QString getId ();
+    QmlSprkDescriptor *descriptor ();
 };
 
 class QmlSprkBlockAttached : public QObject
@@ -50,7 +50,7 @@ public slots:
     void test (bool verbose);
 
     //  Creates a new block
-    QmlSprkBlock *construct (const QString &blockId, QmlSprkDescriptor *descriptor, zlist_t *appliedTransforms);
+    QmlSprkBlock *construct (QmlSprkDescriptor *descriptor, zlist_t *appliedTransforms);
 
     //  Destroy the sprk_block.
     void destruct (QmlSprkBlock *qmlSelf);

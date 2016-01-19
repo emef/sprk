@@ -27,7 +27,19 @@ public:
     
     static QObject* qmlAttachedProperties(QObject* object); // defined in QmlSprkDescriptor.cpp
     
-public slots:};
+public slots:
+    //  
+    const QString uri ();
+
+    //  
+    uint64_t offset ();
+
+    //  
+    uint64_t length ();
+
+    //  
+    uint32_t rowSize ();
+};
 
 class QmlSprkDescriptorAttached : public QObject
 {
@@ -44,7 +56,8 @@ public slots:
     void test (bool verbose);
 
     //  Creates a new descriptor.
-    QmlSprkDescriptor *construct ();
+    //  Creates a new descriptor.
+    QmlSprkDescriptor *construct (const QString &uri, uint64_t offset, uint64_t length, uint32_t rowSize);
 
     //  Destroy the sprk_descriptor.
     void destruct (QmlSprkDescriptor *qmlSelf);

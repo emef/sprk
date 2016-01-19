@@ -18,7 +18,7 @@ public:
     QSprkBlock (sprk_block_t *self, QObject *qObjParent = 0);
 
     //  Creates a new block
-    explicit QSprkBlock (const QString &blockId, QSprkDescriptor *descriptor, zlist_t *appliedTransforms, QObject *qObjParent = 0);
+    explicit QSprkBlock (QSprkDescriptor *descriptor, zlist_t *appliedTransforms, QObject *qObjParent = 0);
 
     //  Destroy the sprk_block.
     ~QSprkBlock ();
@@ -27,7 +27,7 @@ public:
     void queueTransform (QSprkTransform *transform);
 
     //  
-    const QString getId ();
+    QSprkDescriptor * descriptor ();
 
     //  Self test of this class.
     static void test (bool verbose);

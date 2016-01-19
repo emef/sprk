@@ -20,8 +20,10 @@ int main(int argc, char **argv)
     QSprkCtx::test (verbose);
     QSprkDataset::test (verbose);
     QSprkBlock::test (verbose);
+    QSprkBlockdata::test (verbose);
     QSprkDescriptor::test (verbose);
     QSprkTransform::test (verbose);
+    QSprkBlockManager::test (verbose);
 
     qDebug() << "Tests passed OK\n";
     return 0;

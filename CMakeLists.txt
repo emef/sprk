@@ -137,8 +137,10 @@ set (sprk_headers
     include/sprk_ctx.h
     include/sprk_dataset.h
     include/sprk_block.h
+    include/sprk_blockdata.h
     include/sprk_descriptor.h
     include/sprk_transform.h
+    include/sprk_block_manager.h
     include/sprk_msg.h
     src/executor.h
     src/blockworker.h
@@ -154,8 +156,10 @@ set (sprk_sources
     src/sprk_ctx.c
     src/sprk_dataset.c
     src/sprk_block.c
+    src/sprk_blockdata.c
     src/sprk_descriptor.c
     src/sprk_transform.c
+    src/sprk_block_manager.c
     src/sprk_msg.c
     src/executor.c
     src/blockworker.c
@@ -243,8 +247,10 @@ set(TEST_CLASSES
     sprk_ctx
     sprk_dataset
     sprk_block
+    sprk_blockdata
     sprk_descriptor
     sprk_transform
+    sprk_block_manager
     sprk_msg
     executor
     blockworker

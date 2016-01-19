@@ -1,0 +1,26 @@
+<class name = "sprk_blockdata" private = "1">
+  TODO
+
+  <include filename = "license.xml" />
+
+  <constructor>
+    <argument name = "block" type = "sprk_block" />
+    <argument name = "data" c_type = "float*" />
+    <argument name = "length" type = "number" size = "4" />
+
+  </constructor>
+
+  <destructor>
+  </destructor>
+
+  <method name = "queue transform">
+    Queue a transformation to be applied to this block.
+
+    <argument name = "transform" type = "sprk_transform" />
+    <return type = "nothing" />
+  </method>
+
+  <method name = "descriptor">
+    <return type = "sprk_descriptor" />
+  </method>
+</class>

@@ -25,7 +25,7 @@ extern "C" {
 //  @interface
 //  Creates a new block
 SPRK_EXPORT sprk_block_t *
-    sprk_block_new (const char *block_id, sprk_descriptor_t *descriptor, zlist_t *applied_transforms);
+    sprk_block_new (sprk_descriptor_t *descriptor, zlist_t *applied_transforms);
 
 //  Destroy the sprk_block.
 SPRK_EXPORT void
@@ -36,8 +36,8 @@ SPRK_EXPORT void
     sprk_block_queue_transform (sprk_block_t *self, sprk_transform_t *transform);
 
 //  
-SPRK_EXPORT const char *
-    sprk_block_get_id (sprk_block_t *self);
+SPRK_EXPORT sprk_descriptor_t *
+    sprk_block_descriptor (sprk_block_t *self);
 
 //  Self test of this class.
 SPRK_EXPORT void

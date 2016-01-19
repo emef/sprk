@@ -7,7 +7,6 @@
   <constructor>
     Creates a new block
 
-    <argument name = "block id" type = "string" />
     <argument name = "descriptor" type = "sprk_descriptor" />
     <argument name = "applied transforms" type = "zlist">
       List of applied transformation_t
@@ -24,7 +23,7 @@
     <return type = "nothing" />
   </method>
 
-  <method name = "get id">
-    <return type = "string" />
+  <method name = "descriptor">
+    <return type = "sprk_descriptor" />
   </method>
 </class>

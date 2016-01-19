@@ -8,6 +8,30 @@
 #include "QmlSprkDescriptor.h"
 
 
+///
+//  
+const QString QmlSprkDescriptor::uri () {
+    return QString (sprk_descriptor_uri (self));
+};
+
+///
+//  
+uint64_t QmlSprkDescriptor::offset () {
+    return sprk_descriptor_offset (self);
+};
+
+///
+//  
+uint64_t QmlSprkDescriptor::length () {
+    return sprk_descriptor_length (self);
+};
+
+///
+//  
+uint32_t QmlSprkDescriptor::rowSize () {
+    return sprk_descriptor_row_size (self);
+};
+
 
 QObject* QmlSprkDescriptor::qmlAttachedProperties(QObject* object) {
     return new QmlSprkDescriptorAttached(object);
@@ -22,9 +46,10 @@ void QmlSprkDescriptorAttached::test (bool verbose) {
 
 ///
 //  Creates a new descriptor.
-QmlSprkDescriptor *QmlSprkDescriptorAttached::construct () {
+//  Creates a new descriptor.
+QmlSprkDescriptor *QmlSprkDescriptorAttached::construct (const QString &uri, uint64_t offset, uint64_t length, uint32_t rowSize) {
     QmlSprkDescriptor *qmlSelf = new QmlSprkDescriptor ();
-    qmlSelf->self = sprk_descriptor_new ();
+    qmlSelf->self = sprk_descriptor_new (uri.toUtf8().data(), offset, length, rowSize);
     return qmlSelf;
 };
 

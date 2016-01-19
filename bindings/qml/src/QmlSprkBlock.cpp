@@ -16,8 +16,10 @@ void QmlSprkBlock::queueTransform (QmlSprkTransform *transform) {
 
 ///
 //  
-const QString QmlSprkBlock::getId () {
-    return QString (sprk_block_get_id (self));
+QmlSprkDescriptor *QmlSprkBlock::descriptor () {
+    QmlSprkDescriptor *retQ_ = new QmlSprkDescriptor ();
+    retQ_->self = sprk_block_descriptor (self);
+    return retQ_;
 };
 
 
@@ -34,9 +36,9 @@ void QmlSprkBlockAttached::test (bool verbose) {
 
 ///
 //  Creates a new block
-QmlSprkBlock *QmlSprkBlockAttached::construct (const QString &blockId, QmlSprkDescriptor *descriptor, zlist_t *appliedTransforms) {
+QmlSprkBlock *QmlSprkBlockAttached::construct (QmlSprkDescriptor *descriptor, zlist_t *appliedTransforms) {
     QmlSprkBlock *qmlSelf = new QmlSprkBlock ();
-    qmlSelf->self = sprk_block_new (blockId.toUtf8().data(), descriptor->self, appliedTransforms);
+    qmlSelf->self = sprk_block_new (descriptor->self, appliedTransforms);
     return qmlSelf;
 };
 

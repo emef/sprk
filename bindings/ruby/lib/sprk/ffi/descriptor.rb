@@ -74,9 +74,17 @@ module Sprk
       end
 
       # Creates a new descriptor.
+      # Creates a new descriptor.
+      # @param uri [String, #to_s, nil]
+      # @param offset [Integer, #to_int, #to_i]
+      # @param length [Integer, #to_int, #to_i]
+      # @param row_size [Integer, #to_int, #to_i]
       # @return [Sprk::Descriptor]
-      def self.new()
-        ptr = ::Sprk::FFI.sprk_descriptor_new()
+      def self.new(uri, offset, length, row_size)
+        offset = Integer(offset)
+        length = Integer(length)
+        row_size = Integer(row_size)
+        ptr = ::Sprk::FFI.sprk_descriptor_new(uri, offset, length, row_size)
         __new ptr
       end
 
@@ -87,6 +95,46 @@ module Sprk
         return unless @ptr
         self_p = __ptr_give_ref
         result = ::Sprk::FFI.sprk_descriptor_destroy(self_p)
+        result
+      end
+
+      # 
+      #
+      # @return [String]
+      def uri()
+        raise DestroyedError unless @ptr
+        self_p = @ptr
+        result = ::Sprk::FFI.sprk_descriptor_uri(self_p)
+        result
+      end
+
+      # 
+      #
+      # @return [Integer]
+      def offset()
+        raise DestroyedError unless @ptr
+        self_p = @ptr
+        result = ::Sprk::FFI.sprk_descriptor_offset(self_p)
+        result
+      end
+
+      # 
+      #
+      # @return [Integer]
+      def length()
+        raise DestroyedError unless @ptr
+        self_p = @ptr
+        result = ::Sprk::FFI.sprk_descriptor_length(self_p)
+        result
+      end
+
+      # 
+      #
+      # @return [Integer]
+      def row_size()
+        raise DestroyedError unless @ptr
+        self_p = @ptr
+        result = ::Sprk::FFI.sprk_descriptor_row_size(self_p)
         result
       end
 

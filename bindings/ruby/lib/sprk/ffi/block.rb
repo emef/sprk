@@ -75,13 +75,12 @@ module Sprk
       end
 
       # Creates a new block
-      # @param block_id [String, #to_s, nil]
       # @param descriptor [Descriptor, #__ptr]
       # @param applied_transforms [::FFI::Pointer, #to_ptr]
       # @return [Sprk::Block]
-      def self.new(block_id, descriptor, applied_transforms)
+      def self.new(descriptor, applied_transforms)
         descriptor = descriptor.__ptr if descriptor
-        ptr = ::Sprk::FFI.sprk_block_new(block_id, descriptor, applied_transforms)
+        ptr = ::Sprk::FFI.sprk_block_new(descriptor, applied_transforms)
         __new ptr
       end
 
@@ -109,11 +108,12 @@ module Sprk
 
       # 
       #
-      # @return [String]
-      def get_id()
+      # @return [Descriptor]
+      def descriptor()
         raise DestroyedError unless @ptr
         self_p = @ptr
-        result = ::Sprk::FFI.sprk_block_get_id(self_p)
+        result = ::Sprk::FFI.sprk_block_descriptor(self_p)
+        result = Descriptor.__new result, false
         result
       end
 

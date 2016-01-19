@@ -1,16 +1,23 @@
 The following ABNF grammar defines the sprk msg protocol:
 
-    sprk_msg        = *( HELLO | WORLD )
+    sprk_msg        = *( ASSIGN-BLOCK )
 
     ;  No description                                                        
 
-    HELLO           = signature %d1
+    ASSIGN-BLOCK    = signature %d1 block_id descriptor
     signature       = %xAA %xA0             ; two octets
-
-    ;  No description                                                        
-
-    WORLD           = signature %d2
+    block_id        = string                ; 
+    descriptor      = descriptor            ; 
+    descriptor      = uri offset length row_size
+    uri             = string                ; 
+    offset          = number-8              ; 
+    length          = number-8              ; 
+    row_size        = number-4              ; 
 
     ; Strings are always length + text contents
+    string          = number-1 *VCHAR
 
     ; Numbers are unsigned integers in network byte order
+    number-1        = 1OCTET
+    number-4        = 4OCTET
+    number-8        = 8OCTET

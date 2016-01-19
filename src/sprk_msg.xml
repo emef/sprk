@@ -4,8 +4,18 @@
     title = "sprk msg protocol"
     script = "zproto_codec_c"
     package_dir = "../include"
-    source_dir = "."
-    >
-    <message name = "HELLO" />
-    <message name = "WORLD" />
+    source_dir = ".">
+
+  <type name = "descriptor">
+    <field name = "uri" type = "string" />
+    <field name = "offset" type = "number" size = "8" />
+    <field name = "length" type = "number" size = "8" />
+    <field name = "row size" type = "number" size = "4" />
+  </type>
+
+  <message name = "ASSIGN BLOCK">
+    <field name = "block_id" type = "string" />
+    <field name = "descriptor" type = "descriptor" />
+  </message>
+
 </class>

@@ -41,12 +41,13 @@ blockworker_new (zsock_t *pipe, void *args)
     blockworker_t *self = (blockworker_t *) zmalloc (sizeof (blockworker_t));
     assert (self);
 
+    // Connect to worker pool socket
+    self->work_pull = zsock_new_pull ("inproc://blockpush");
+    assert (self->work_pull);
+
     self->pipe = pipe;
     self->terminated = false;
-    self->poller = zpoller_new (self->pipe, NULL);
-
-    puts ("created blockworker\n");
-    self->work_pull = zsock_new_pull ("inproc://blockpush");
+    self->poller = zpoller_new (self->pipe, self->work_pull, NULL);
 
     return self;
 }
@@ -80,12 +81,7 @@ blockworker_start (blockworker_t *self)
 {
     assert (self);
 
-    //  TODO: Add startup actions
-    puts ("starting worker");
-    zframe_t *msg = zframe_recv (self->work_pull);
-    puts (zframe_strdup (msg));
-
-    zframe_destroy (&msg);
+    puts ("created blockworker\n");
 
     return 0;
 }
@@ -98,8 +94,6 @@ static int
 blockworker_stop (blockworker_t *self)
 {
     assert (self);
-
-    //  TODO: Add shutdown actions
 
     return 0;
 }
@@ -136,6 +130,16 @@ blockworker_recv_api (blockworker_t *self)
     }
 }
 
+void
+blockworker_handle_work (blockworker_t *self)
+{
+    sprk_msg_t *msg = sprk_msg_new ();
+    sprk_msg_recv (msg, self->work_pull);
+
+    sprk_msg_print (msg);
+    sprk_msg_destroy (&msg);
+}
+
 
 //  --------------------------------------------------------------------------
 //  This is the actor which runs in its own thread.
@@ -154,7 +158,10 @@ blockworker_actor (zsock_t *pipe, void *args)
        zsock_t *which = (zsock_t *) zpoller_wait (self->poller, 0);
        if (which == self->pipe)
           blockworker_recv_api (self);
-       //  Add other sockets when you need them.
+
+       else
+       if (which == self->work_pull)
+           blockworker_handle_work (self);
     }
 
     blockworker_destroy (&self);

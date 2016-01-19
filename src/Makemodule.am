@@ -17,8 +17,10 @@ include_HEADERS = \
     include/sprk_ctx.h \
     include/sprk_dataset.h \
     include/sprk_block.h \
+    include/sprk_blockdata.h \
     include/sprk_descriptor.h \
     include/sprk_transform.h \
+    include/sprk_block_manager.h \
     include/sprk_msg.h \
     include/sprk_library.h
 
@@ -26,8 +28,10 @@ src_libsprk_la_SOURCES = \
     src/sprk_ctx.c \
     src/sprk_dataset.c \
     src/sprk_block.c \
+    src/sprk_blockdata.c \
     src/sprk_descriptor.c \
     src/sprk_transform.c \
+    src/sprk_block_manager.c \
     src/sprk_msg.c \
     src/executor.c \
     src/blockworker.c \
@@ -83,9 +87,12 @@ dist_api_DATA = \
     api/license.xml \
     api/sprk_block.xml \
     api/license.xml \
+    api/sprk_blockdata.xml \
+    api/license.xml \
     api/sprk_descriptor.xml \
     api/license.xml \
-    api/sprk_transform.xml
+    api/sprk_transform.xml \
+    api/sprk_block_manager.xml
 
 # define custom target for all products of /src
 src:

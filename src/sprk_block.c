@@ -23,7 +23,6 @@ and the transformations that are applied to it.
 #include "sprk_classes.h"
 
 struct _sprk_block_t {
-  const char *block_id;
   sprk_descriptor_t *descriptor;
   zlist_t *applied_transforms;
   zlist_t *queued_transforms;
@@ -33,7 +32,7 @@ struct _sprk_block_t {
 //  Creates a new block
 
 sprk_block_t *
-sprk_block_new (const char *block_id, sprk_descriptor_t *descriptor, zlist_t *applied_transforms)
+sprk_block_new (sprk_descriptor_t *descriptor, zlist_t *applied_transforms)
 {
     sprk_block_t *self = (sprk_block_t *) zmalloc (sizeof (sprk_block_t));
     assert (self);
@@ -42,7 +41,6 @@ sprk_block_new (const char *block_id, sprk_descriptor_t *descriptor, zlist_t *ap
       applied_transforms = zlist_new();
     }
 
-    self->block_id = block_id;
     self->descriptor = descriptor;
     self->applied_transforms = applied_transforms;
     self->queued_transforms = zlist_new ();
@@ -84,13 +82,12 @@ sprk_block_destroy (sprk_block_t **self_p)
     }
 }
 
-const char *
-sprk_block_get_id (sprk_block_t *self)
+sprk_descriptor_t *
+sprk_block_descriptor (sprk_block_t *self)
 {
     assert (self);
-    return self->block_id;
+    return self->descriptor;
 }
-
 
 
 //  --------------------------------------------------------------------------

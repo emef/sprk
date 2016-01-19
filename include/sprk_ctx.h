@@ -31,8 +31,8 @@ SPRK_EXPORT sprk_ctx_t *
 SPRK_EXPORT void
     sprk_ctx_destroy (sprk_ctx_t **self_p);
 
-//  Assign a block to the executor pool.
-SPRK_EXPORT void
+//  Assign a block to the executor pool, giving it a unique ID.
+SPRK_EXPORT const char *
     sprk_ctx_assign_block (sprk_ctx_t *self, sprk_block_t *block);
 
 //  Remove a block from the executor pool.

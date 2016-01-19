@@ -9,9 +9,9 @@
 
 
 ///
-//  Assign a block to the executor pool.
-void QmlSprkCtx::assignBlock (QmlSprkBlock *block) {
-    sprk_ctx_assign_block (self, block->self);
+//  Assign a block to the executor pool, giving it a unique ID.
+const QString QmlSprkCtx::assignBlock (QmlSprkBlock *block) {
+    return QString (sprk_ctx_assign_block (self, block->self));
 };
 
 ///

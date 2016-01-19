@@ -91,10 +91,10 @@ module Sprk
         result
       end
 
-      # Assign a block to the executor pool.
+      # Assign a block to the executor pool, giving it a unique ID.
       #
       # @param block [Block, #__ptr]
-      # @return [void]
+      # @return [String]
       def assign_block(block)
         raise DestroyedError unless @ptr
         self_p = @ptr

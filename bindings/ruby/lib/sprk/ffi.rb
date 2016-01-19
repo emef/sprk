@@ -40,7 +40,7 @@ module Sprk
 
       attach_function :sprk_ctx_new, [], :pointer, **opts
       attach_function :sprk_ctx_destroy, [:pointer], :void, **opts
-      attach_function :sprk_ctx_assign_block, [:pointer, :pointer], :void, **opts
+      attach_function :sprk_ctx_assign_block, [:pointer, :pointer], :string, **opts
       attach_function :sprk_ctx_drop_block, [:pointer, :pointer], :void, **opts
       attach_function :sprk_ctx_test, [:bool], :void, **opts
 
@@ -55,16 +55,28 @@ module Sprk
 
       require_relative 'ffi/dataset'
 
-      attach_function :sprk_block_new, [:string, :pointer, :pointer], :pointer, **opts
+      attach_function :sprk_block_new, [:pointer, :pointer], :pointer, **opts
       attach_function :sprk_block_destroy, [:pointer], :void, **opts
       attach_function :sprk_block_queue_transform, [:pointer, :pointer], :void, **opts
-      attach_function :sprk_block_get_id, [:pointer], :string, **opts
+      attach_function :sprk_block_descriptor, [:pointer], :pointer, **opts
       attach_function :sprk_block_test, [:bool], :void, **opts
 
       require_relative 'ffi/block'
 
-      attach_function :sprk_descriptor_new, [], :pointer, **opts
+      attach_function :sprk_blockdata_new, [:pointer, :pointer, :uint32], :pointer, **opts
+      attach_function :sprk_blockdata_destroy, [:pointer], :void, **opts
+      attach_function :sprk_blockdata_queue_transform, [:pointer, :pointer], :void, **opts
+      attach_function :sprk_blockdata_descriptor, [:pointer], :pointer, **opts
+      attach_function :sprk_blockdata_test, [:bool], :void, **opts
+
+      require_relative 'ffi/blockdata'
+
+      attach_function :sprk_descriptor_new, [:string, :uint64, :uint64, :uint32], :pointer, **opts
       attach_function :sprk_descriptor_destroy, [:pointer], :void, **opts
+      attach_function :sprk_descriptor_uri, [:pointer], :string, **opts
+      attach_function :sprk_descriptor_offset, [:pointer], :uint64, **opts
+      attach_function :sprk_descriptor_length, [:pointer], :uint64, **opts
+      attach_function :sprk_descriptor_row_size, [:pointer], :uint32, **opts
       attach_function :sprk_descriptor_test, [:bool], :void, **opts
 
       require_relative 'ffi/descriptor'
@@ -74,6 +86,14 @@ module Sprk
       attach_function :sprk_transform_test, [:bool], :void, **opts
 
       require_relative 'ffi/transform'
+
+      attach_function :sprk_block_manager_new, [], :pointer, **opts
+      attach_function :sprk_block_manager_destroy, [:pointer], :void, **opts
+      attach_function :sprk_block_manager_read_and_store_block, [:pointer, :string, :pointer], :pointer, **opts
+      attach_function :sprk_block_manager_get_block, [:pointer, :string], :pointer, **opts
+      attach_function :sprk_block_manager_test, [:bool], :void, **opts
+
+      require_relative 'ffi/block_manager'
     end
   end
 end

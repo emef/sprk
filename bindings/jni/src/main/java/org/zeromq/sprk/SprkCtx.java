@@ -38,11 +38,11 @@ public class SprkCtx implements AutoCloseable{
         self = 0;
     }
     /*
-    Assign a block to the executor pool.
+    Assign a block to the executor pool, giving it a unique ID.
     */
-    native static void __assignBlock (long self, long block);
-    public void assignBlock (SprkBlock block) {
-        __assignBlock (self, block.self);
+    native static String __assignBlock (long self, long block);
+    public String assignBlock (SprkBlock block) {
+        return __assignBlock (self, block.self);
     }
     /*
     Remove a block from the executor pool.

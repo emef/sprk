@@ -28,8 +28,8 @@ public:
     static QObject* qmlAttachedProperties(QObject* object); // defined in QmlSprkCtx.cpp
     
 public slots:
-    //  Assign a block to the executor pool.
-    void assignBlock (QmlSprkBlock *block);
+    //  Assign a block to the executor pool, giving it a unique ID.
+    const QString assignBlock (QmlSprkBlock *block);
 
     //  Remove a block from the executor pool.
     void dropBlock (QmlSprkBlock *block);

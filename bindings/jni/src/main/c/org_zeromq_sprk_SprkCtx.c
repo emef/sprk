@@ -25,10 +25,12 @@ Java_org_zeromq_sprk_SprkCtx__1_1destroy (JNIEnv *env, jclass c, jlong self)
     sprk_ctx_destroy ((sprk_ctx_t **) &self);
 }
 
-JNIEXPORT void JNICALL
+JNIEXPORT jstring JNICALL
 Java_org_zeromq_sprk_SprkCtx__1_1assignBlock (JNIEnv *env, jclass c, jlong self, jlong block)
 {
-    sprk_ctx_assign_block ((sprk_ctx_t *) (intptr_t) self, (sprk_block_t *) (intptr_t) block);
+    char *assign_block_ = (char *) sprk_ctx_assign_block ((sprk_ctx_t *) (intptr_t) self, (sprk_block_t *) (intptr_t) block);
+    jstring return_string_ = (*env)->NewStringUTF (env, assign_block_);
+    return return_string_;
 }
 
 JNIEXPORT void JNICALL

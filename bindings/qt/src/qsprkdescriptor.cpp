@@ -17,9 +17,10 @@ QSprkDescriptor::QSprkDescriptor (sprk_descriptor_t *self, QObject *qObjParent) 
 
 ///
 //  Creates a new descriptor.
-QSprkDescriptor::QSprkDescriptor (QObject *qObjParent) : QObject (qObjParent)
+//  Creates a new descriptor.
+QSprkDescriptor::QSprkDescriptor (const QString &uri, quint64 offset, quint64 length, quint32 rowSize, QObject *qObjParent) : QObject (qObjParent)
 {
-    this->self = sprk_descriptor_new ();
+    this->self = sprk_descriptor_new (uri.toUtf8().data(), (uint64_t) offset, (uint64_t) length, (uint32_t) rowSize);
 }
 
 ///
@@ -27,6 +28,38 @@ QSprkDescriptor::QSprkDescriptor (QObject *qObjParent) : QObject (qObjParent)
 QSprkDescriptor::~QSprkDescriptor ()
 {
     sprk_descriptor_destroy (&self);
+}
+
+///
+//  
+const QString QSprkDescriptor::uri ()
+{
+    const QString rv = QString (sprk_descriptor_uri (self));
+    return rv;
+}
+
+///
+//  
+quint64 QSprkDescriptor::offset ()
+{
+    uint64_t rv = sprk_descriptor_offset (self);
+    return rv;
+}
+
+///
+//  
+quint64 QSprkDescriptor::length ()
+{
+    uint64_t rv = sprk_descriptor_length (self);
+    return rv;
+}
+
+///
+//  
+quint32 QSprkDescriptor::rowSize ()
+{
+    uint32_t rv = sprk_descriptor_row_size (self);
+    return rv;
 }
 
 ///

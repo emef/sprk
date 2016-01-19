@@ -54,10 +54,14 @@ typedef struct _sprk_dataset_t sprk_dataset_t;
 #define SPRK_DATASET_T_DEFINED
 typedef struct _sprk_block_t sprk_block_t;
 #define SPRK_BLOCK_T_DEFINED
+typedef struct _sprk_blockdata_t sprk_blockdata_t;
+#define SPRK_BLOCKDATA_T_DEFINED
 typedef struct _sprk_descriptor_t sprk_descriptor_t;
 #define SPRK_DESCRIPTOR_T_DEFINED
 typedef struct _sprk_transform_t sprk_transform_t;
 #define SPRK_TRANSFORM_T_DEFINED
+typedef struct _sprk_block_manager_t sprk_block_manager_t;
+#define SPRK_BLOCK_MANAGER_T_DEFINED
 typedef struct _sprk_msg_t sprk_msg_t;
 #define SPRK_MSG_T_DEFINED
 
@@ -66,8 +70,10 @@ typedef struct _sprk_msg_t sprk_msg_t;
 #include "sprk_ctx.h"
 #include "sprk_dataset.h"
 #include "sprk_block.h"
+#include "sprk_blockdata.h"
 #include "sprk_descriptor.h"
 #include "sprk_transform.h"
+#include "sprk_block_manager.h"
 #include "sprk_msg.h"
 
 #endif

@@ -31,8 +31,10 @@ all_tests [] = {
     { "sprk_ctx", sprk_ctx_test },
     { "sprk_dataset", sprk_dataset_test },
     { "sprk_block", sprk_block_test },
+    { "sprk_blockdata", sprk_blockdata_test },
     { "sprk_descriptor", sprk_descriptor_test },
     { "sprk_transform", sprk_transform_test },
+    { "sprk_block_manager", sprk_block_manager_test },
     { "sprk_msg", sprk_msg_test },
     { "executor", executor_test },
     { "blockworker", blockworker_test },
@@ -93,7 +95,7 @@ main (int argc, char **argv)
         else
         if (streq (argv [argn], "--number")
         ||  streq (argv [argn], "-n")) {
-            puts ("8");
+            puts ("10");
             return 0;
         }
         else
@@ -103,8 +105,10 @@ main (int argc, char **argv)
             puts ("    sprk_ctx");
             puts ("    sprk_dataset");
             puts ("    sprk_block");
+            puts ("    sprk_blockdata");
             puts ("    sprk_descriptor");
             puts ("    sprk_transform");
+            puts ("    sprk_block_manager");
             puts ("    sprk_msg");
             puts ("    executor");
             puts ("    blockworker");
