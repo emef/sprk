@@ -1,0 +1,56 @@
+#
+#    sprk - Project
+#
+#    Copyright (c) the Contributors as noted in the AUTHORS file.       
+#    This file is part of CZMQ, the high-level C binding for 0MQ:       
+#    http://czmq.zeromq.org.                                            
+#                                                                       
+#    This Source Code Form is subject to the terms of the Mozilla Public
+#    License, v. 2.0. If a copy of the MPL was not distributed with this
+#    file, You can obtain one at http://mozilla.org/MPL/2.0/.           
+
+Source:         sprk
+Section:        net
+Priority:       optional
+Maintainer:     John Doe <John.Doe@example.com>
+Uploaders:      John Doe <John.Doe@example.com>
+Standards-Version: 3.9.5
+Build-Depends: bison, debhelper (>= 8),
+    pkg-config,
+    automake,
+    autoconf,
+    libtool,
+    libsodium-dev,
+    libzmq4-dev,
+    libczmq-dev,
+    dh-autoreconf,
+    systemd
+
+Package: libsprk0
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: sprk
+ This package contains shared library for sprk: project
+
+Package: sprk-dev
+Architecture: all
+Section: libdevel
+Depends:
+    libsodium-dev,
+    libzmq4-dev,
+    libczmq-dev,
+    libsprk0 (= ${binary:Version})
+Description: development files for sprk
+ This package contains development files for sprk: project
+
+
+Package: sprk-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends:
+    libsprk0 (= ${binary:Version}),
+    ${misc:Depends}
+Description: debugging symbols for sprk
+ This package contains the debugging symbols for sprk : project.
+

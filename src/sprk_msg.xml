@@ -1,0 +1,11 @@
+<class
+    name = "sprk_msg"
+    signature = "0"
+    title = "sprk msg protocol"
+    script = "zproto_codec_c"
+    package_dir = "../include"
+    source_dir = "."
+    >
+    <message name = "HELLO" />
+    <message name = "WORLD" />
+</class>

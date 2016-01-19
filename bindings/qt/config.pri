@@ -1,0 +1,1 @@
+QSPRK_LIBRARY = yes

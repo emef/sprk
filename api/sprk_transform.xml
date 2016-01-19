@@ -1,0 +1,12 @@
+<class name = "sprk_transform">
+
+  <include filename = "license.xml" />
+
+  <constructor>
+    Creates a new transformation.
+  </constructor>
+
+  <destructor>
+  </destructor>
+
+</class>

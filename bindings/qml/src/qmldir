@@ -1,0 +1,2 @@
+module QmlSprk
+plugin qml_sprk

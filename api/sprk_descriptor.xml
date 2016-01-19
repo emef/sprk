@@ -1,0 +1,12 @@
+<class name = "sprk_descriptor">
+
+  <include filename = "license.xml" />
+
+  <constructor>
+    Creates a new descriptor.
+  </constructor>
+
+  <destructor>
+  </destructor>
+
+</class>

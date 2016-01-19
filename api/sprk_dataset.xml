@@ -1,0 +1,39 @@
+<class name = "sprk_dataset" >
+  Distributed dataset with fixed set of operations and transformations.
+
+  <include filename = "license.xml" />
+
+  <constructor>
+    Creates a new sprk dataset from a set of input paths.
+
+    <argument name = "context" type = "sprk_ctx" />
+    <argument name = "path list" type = "string">
+      Comma-separated list of path URIs (including protocol).
+    </argument>
+  </constructor>
+
+  <destructor>
+  </destructor>
+
+  <method name = "checkpoint">
+    Checkpoints all blocks and their transformations across executors.
+
+    <return type = "nothing" />
+  </method>
+
+  <!-- transformations -->
+  <method name = "mul">
+    Multiplies all values by the multiplier.
+
+    <argument name = "multiplier" type = "real" />
+    <return type = "nothing" />
+  </method>
+
+  <!-- aggregations -->
+  <method name = "sum">
+    Calculates the sum of all values in the dataset.
+
+    <return type = "real" />
+  </method>
+
+</class>

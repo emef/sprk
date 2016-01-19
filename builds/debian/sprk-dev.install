@@ -1,0 +1,3 @@
+debian/tmp/usr/include/*
+debian/tmp/usr/lib/*/libsprk.so
+debian/tmp/usr/lib/*/pkgconfig/libsprk.pc

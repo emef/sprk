@@ -1,0 +1,35 @@
+<project
+    script = "zproject.gsl"
+    name = "sprk"
+    repository = "git://github.com/emef/sprk.git">
+
+    <include filename = "license.xml" />
+    <use project = "czmq" />
+
+    <!-- driver classes -->
+    <class name = "sprk_ctx" />
+    <class name = "sprk_dataset" />
+
+    <!-- block classes -->
+    <class name = "sprk_block" />
+    <class name = "sprk_descriptor" />
+    <class name = "sprk_transform" />
+
+    <!-- protocol -->
+    <class name = "sprk_msg" />
+    <model name = "sprk_msg" />
+
+    <!-- actors -->
+    <actor name = "executor" private = "1">
+      Executor which manages a set of blocks which are owned by a
+      sprk_dataset. Delegates operations to its workers.
+    </actor>
+
+    <actor name = "blockworker" private = "1">
+      Worker which operates on a single block at a time.
+    </actor>
+
+    <!-- executables -->
+    <main name = "inprocess" />
+
+</project>

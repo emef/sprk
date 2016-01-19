@@ -1,0 +1,24 @@
+<class name = "sprk_ctx" >
+  sprk context; public API to work with distributed datasets.
+
+  <include filename = "license.xml" />
+
+  <constructor>
+    Creates a new sprk context which facilitates communication with
+    known executors.
+  </constructor>
+
+  <destructor>
+  </destructor>
+
+  <method name = "assign_block">
+    Assign a block to the executor pool.
+    <argument name = "block" type = "sprk_block" />
+  </method>
+
+  <method name = "drop_block">
+    Remove a block from the executor pool.
+    <argument name = "block" type = "sprk_block" />
+  </method>
+
+</class>
