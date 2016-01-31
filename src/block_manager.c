@@ -92,7 +92,8 @@ block_manager_read_and_store_block (
     uint32_t length = descriptor_length (descriptor);
     size_t floats = length / sizeof (float);
     float *data = (float *)malloc (length);
-    fread (data, sizeof (float), floats, fp);
+    int n = fread (data, sizeof (float), floats, fp);
+    assert (n == length);
     fclose (fp);
 
     block_data_t *blockdata = block_data_new (
