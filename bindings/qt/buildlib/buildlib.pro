@@ -13,10 +13,12 @@ include(../src/qsprk.pri)
 TARGET = $$QSPRK_LIBNAME
 DESTDIR = $$QSPRK_LIBDIR
 
+!packagesExist (libsodium): error ("cannot link with -lsodium, install libsodium.")
 !packagesExist (libzmq): error ("cannot link with -lzmq, install libzmq.")
 !packagesExist (libczmq): error ("cannot link with -lczmq, install libczmq.")
 
 LIBS += \
+    -lsodium \
     -lzmq \
     -lczmq \
     -lsprk

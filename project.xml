@@ -4,6 +4,7 @@
     repository = "git://github.com/emef/sprk.git">
 
     <include filename = "license.xml" />
+    <use project = "libsodium" />
     <use project = "czmq" />
 
     <header name = "sprk_internal" private = "1" />

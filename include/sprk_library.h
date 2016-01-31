@@ -36,6 +36,7 @@
 //  Set up environment for the application
 
 //  External dependencies
+#include <sodium.h>
 #include <czmq.h>
 
 //  SPRK version macros for compile-time API detection

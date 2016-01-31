@@ -47,6 +47,10 @@
       <AdditionalDependencies>libsprk.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="$(Configuration.IndexOf('Debug')) != -1">..\..\..\..\..\..\sprk\bin\$(PlatformName)\Debug\$(PlatformToolset)\dynamic\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="$(Configuration.IndexOf('Release')) != -1">..\..\..\..\..\..\sprk\bin\$(PlatformName)\Release\$(PlatformToolset)\dynamic\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <!-- Pull in libsodium dependency -->
+      <AdditionalDependencies>libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="$(Configuration.IndexOf('Debug')) != -1">..\..\..\..\..\..\libsodium\bin\$(PlatformName)\Debug\$(PlatformToolset)\dynamic\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="$(Configuration.IndexOf('Release')) != -1">..\..\..\..\..\..\libsodium\bin\$(PlatformName)\Release\$(PlatformToolset)\dynamic\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <!-- Pull in libzmq dependency -->
       <AdditionalDependencies>libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="$(Configuration.IndexOf('Debug')) != -1">..\..\..\..\..\..\libzmq\bin\$(PlatformName)\Debug\$(PlatformToolset)\dynamic\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

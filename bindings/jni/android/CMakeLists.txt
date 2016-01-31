@@ -29,6 +29,7 @@ set (sprkjni_sources
 add_library (sprkjni SHARED ${sprkjni_sources})
 target_link_libraries (sprkjni
     sprk
+    sodium
     zmq
     czmq
 )

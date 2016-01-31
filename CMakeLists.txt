@@ -7,6 +7,7 @@
 # Project setup
 ########################################################################
 cmake_minimum_required(VERSION 2.8)
+set(CMAKE_C_FLAGS "-std=c99")
 project(sprk)
 enable_language(C)
 enable_testing()
@@ -98,12 +99,12 @@ set(OPTIONAL_LIBRARIES)
 ########################################################################
 # LIBSODIUM dependency
 ########################################################################
-find_package(libsodium)
+find_package(libsodium REQUIRED)
 IF (LIBSODIUM_FOUND)
     include_directories(${LIBSODIUM_INCLUDE_DIRS})
     list(APPEND MORE_LIBRARIES ${LIBSODIUM_LIBRARIES})
-    add_definitions(-DHAVE_LIBSODIUM)
-    list(APPEND OPTIONAL_LIBRARIES ${LIBSODIUM_LIBRARIES})
+ELSE (LIBSODIUM_FOUND)
+    message( FATAL_ERROR "libsodium not found." )
 ENDIF (LIBSODIUM_FOUND)
 
 ########################################################################
@@ -215,6 +216,7 @@ add_executable(
 target_link_libraries(
     sprk_broker
     sprk
+    ${LIBSODIUM_LIBRARIES}
     ${LIBZMQ_LIBRARIES}
     ${CZMQ_LIBRARIES}
     ${OPTIONAL_LIBRARIES}
@@ -230,6 +232,7 @@ add_executable(
 target_link_libraries(
     sprk_executor
     sprk
+    ${LIBSODIUM_LIBRARIES}
     ${LIBZMQ_LIBRARIES}
     ${CZMQ_LIBRARIES}
     ${OPTIONAL_LIBRARIES}
@@ -245,6 +248,7 @@ add_executable(
 target_link_libraries(
     inprocess
     sprk
+    ${LIBSODIUM_LIBRARIES}
     ${LIBZMQ_LIBRARIES}
     ${CZMQ_LIBRARIES}
     ${OPTIONAL_LIBRARIES}
@@ -260,6 +264,7 @@ add_executable(
 target_link_libraries(
     outprocess
     sprk
+    ${LIBSODIUM_LIBRARIES}
     ${LIBZMQ_LIBRARIES}
     ${CZMQ_LIBRARIES}
     ${OPTIONAL_LIBRARIES}
@@ -275,6 +280,7 @@ add_executable(
 target_link_libraries(
     gendata
     sprk
+    ${LIBSODIUM_LIBRARIES}
     ${LIBZMQ_LIBRARIES}
     ${CZMQ_LIBRARIES}
     ${OPTIONAL_LIBRARIES}
@@ -290,6 +296,7 @@ add_executable(
 target_link_libraries(
     topology
     sprk
+    ${LIBSODIUM_LIBRARIES}
     ${LIBZMQ_LIBRARIES}
     ${CZMQ_LIBRARIES}
     ${OPTIONAL_LIBRARIES}
@@ -305,6 +312,7 @@ add_executable(
 target_link_libraries(
     sprk_selftest
     sprk
+    ${LIBSODIUM_LIBRARIES}
     ${LIBZMQ_LIBRARIES}
     ${CZMQ_LIBRARIES}
     ${OPTIONAL_LIBRARIES}
