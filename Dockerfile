@@ -41,9 +41,8 @@ RUN sudo ldconfig
 WORKDIR /home/zmq
 RUN git clone git://github.com/emef/sprk.git
 WORKDIR /home/zmq/sprk
-RUN mkdir build
-WORKDIR /home/zmq/sprk/build
-RUN cmake ..
+RUN ./autogen.sh
+RUN ./configure
 RUN make VERBOSE=1
 RUN sudo make install
 RUN sudo ldconfig

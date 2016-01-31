@@ -76,7 +76,7 @@ sprk_ctx_assign_block (sprk_ctx_t *self, block_t *block)
 
   // TODO: use UIDs
   static int i = 0;
-  char *block_id = malloc(64 * sizeof (char));
+  char *block_id = (char *) malloc(64 * sizeof (char));
   snprintf(block_id, 64, "block-%d", i++);
 
   sprk_msg_t *msg = sprk_msg_new ();

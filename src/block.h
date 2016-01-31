@@ -21,8 +21,6 @@ extern "C" {
 
 #include "sprk_internal.h"
 
-typedef struct _block_t block_t;
-
 //  Creates a new block
 SPRK_EXPORT block_t *
     block_new (descriptor_t *descriptor, zlist_t *applied_transforms);
