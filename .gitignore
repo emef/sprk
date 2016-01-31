@@ -75,4 +75,4 @@ src/app/jni/output
 *.swp
 *~
 
-#*
+\#*
