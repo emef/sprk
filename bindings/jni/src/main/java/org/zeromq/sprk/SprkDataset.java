@@ -6,7 +6,7 @@
 */
 package org.zeromq.sprk;
 
-public class SprkDataset implements AutoCloseable{
+public class SprkDataset {
     static {
         try {
             System.loadLibrary ("sprkjni");
@@ -16,17 +16,6 @@ public class SprkDataset implements AutoCloseable{
         }
     }
     public long self;
-    /*
-    Creates a new sprk dataset from a set of input paths.
-    */
-    native static long __new (long context, String pathList);
-    public SprkDataset (SprkCtx context, String pathList) {
-        /*  TODO: if __new fails, self is null...            */
-        self = __new (context.self, pathList);
-    }
-    public SprkDataset (long pointer) {
-        self = pointer;
-    }
     /*
     Destroy the sprk_dataset.
     */

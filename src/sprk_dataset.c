@@ -21,18 +21,22 @@
 #include "sprk_classes.h"
 
 struct _sprk_dataset_t {
-  int hi;
+    sprk_ctx_t *ctx;  // parent context (does not own)
+    zhash_t *blocks;  // map block-id to block_t (owns)
 };
 
 //  --------------------------------------------------------------------------
 //  Creates a new sprk dataset from a set of input paths.
 
 sprk_dataset_t *
-sprk_dataset_new (sprk_ctx_t *context, const char *path_list)
+sprk_dataset_new (sprk_ctx_t *context, zhash_t *blocks)
 {
     sprk_dataset_t *self = (sprk_dataset_t *) zmalloc (sizeof (sprk_dataset_t));
     assert (self);
-    //  TODO: Initialize properties
+
+    self->ctx = context;
+    self->blocks = blocks;
+
     return self;
 }
 
@@ -45,7 +49,15 @@ sprk_dataset_destroy (sprk_dataset_t **self_p)
     assert (self_p);
     if (*self_p) {
         sprk_dataset_t *self = *self_p;
-        //  TODO: Free class properties
+
+        block_t *block = (block_t *) zhash_first (self->blocks);
+        while (block != NULL) {
+            block_destroy (&block);
+            zhash_delete (self->blocks, zhash_cursor (self->blocks));
+            block = (block_t *) zhash_next (self->blocks);
+        }
+        zhash_destroy (&self->blocks);
+
         //  Free object itself
         free (self);
         *self_p = NULL;

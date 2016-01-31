@@ -18,4 +18,8 @@
     <field name = "descriptor" type = "descriptor" />
   </message>
 
+  <message name = "BLOCK ASSIGNED">
+    <field name = "block_id" type = "string" />
+  </message>
+
 </class>

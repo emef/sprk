@@ -28,11 +28,8 @@ public:
     static QObject* qmlAttachedProperties(QObject* object); // defined in QmlSprkCtx.cpp
     
 public slots:
-    //  Assign a block to the executor pool, giving it a unique ID.
-    const QString assignBlock (QmlSprkBlock *block);
-
-    //  Remove a block from the executor pool.
-    void dropBlock (QmlSprkBlock *block);
+    //  Loads data located in given paths distributed across executors.
+    QmlSprkDataset *loadDense (const QString &pathList, uint32_t rowSize);
 };
 
 class QmlSprkCtxAttached : public QObject
@@ -51,7 +48,7 @@ public slots:
 
     //  Creates a new sprk context which facilitates communication with
     //  known executors.                                               
-    QmlSprkCtx *construct ();
+    QmlSprkCtx *construct (const QString &brokerUri);
 
     //  Destroy the sprk_ctx.
     void destruct (QmlSprkCtx *qmlSelf);

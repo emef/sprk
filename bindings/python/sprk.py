@@ -29,48 +29,22 @@ class sprk_ctx_t(Structure):
     pass # Empty - only for type checking
 sprk_ctx_p = POINTER(sprk_ctx_t)
 
-class sprk_block_t(Structure):
+class number_t(Structure):
     pass # Empty - only for type checking
-sprk_block_p = POINTER(sprk_block_t)
+number_p = POINTER(number_t)
 
 class sprk_dataset_t(Structure):
     pass # Empty - only for type checking
 sprk_dataset_p = POINTER(sprk_dataset_t)
 
-class sprk_descriptor_t(Structure):
-    pass # Empty - only for type checking
-sprk_descriptor_p = POINTER(sprk_descriptor_t)
-
-class zlist_t(Structure):
-    pass # Empty - only for type checking
-zlist_p = POINTER(zlist_t)
-
-class sprk_transform_t(Structure):
-    pass # Empty - only for type checking
-sprk_transform_p = POINTER(sprk_transform_t)
-
-class number_t(Structure):
-    pass # Empty - only for type checking
-number_p = POINTER(number_t)
-
-class sprk_blockdata_t(Structure):
-    pass # Empty - only for type checking
-sprk_blockdata_p = POINTER(sprk_blockdata_t)
-
-class sprk_block_manager_t(Structure):
-    pass # Empty - only for type checking
-sprk_block_manager_p = POINTER(sprk_block_manager_t)
-
 
 # sprk_ctx
 lib.sprk_ctx_new.restype = sprk_ctx_p
-lib.sprk_ctx_new.argtypes = []
+lib.sprk_ctx_new.argtypes = [c_char_p]
 lib.sprk_ctx_destroy.restype = None
 lib.sprk_ctx_destroy.argtypes = [POINTER(sprk_ctx_p)]
-lib.sprk_ctx_assign_block.restype = c_char_p
-lib.sprk_ctx_assign_block.argtypes = [sprk_ctx_p, sprk_block_p]
-lib.sprk_ctx_drop_block.restype = None
-lib.sprk_ctx_drop_block.argtypes = [sprk_ctx_p, sprk_block_p]
+lib.sprk_ctx_load_dense.restype = sprk_dataset_p
+lib.sprk_ctx_load_dense.argtypes = [sprk_ctx_p, c_char_p, number_p]
 lib.sprk_ctx_test.restype = None
 lib.sprk_ctx_test.argtypes = [c_bool]
 
@@ -88,8 +62,8 @@ known executors."""
             self._as_parameter_ = args[0] # Conversion from raw type to binding
             self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
         else:
-            assert(len(args) == 0)
-            self._as_parameter_ = lib.sprk_ctx_new() # Creation of new raw type
+            assert(len(args) == 1)
+            self._as_parameter_ = lib.sprk_ctx_new(args[0]) # Creation of new raw type
             self.allow_destruct = True
 
     def __del__(self):
@@ -105,13 +79,9 @@ known executors."""
         "Determine whether the object is valid by converting to boolean" # Python 2
         return self._as_parameter_.__nonzero__()
 
-    def assign_block(self, block):
-        """Assign a block to the executor pool, giving it a unique ID."""
-        return lib.sprk_ctx_assign_block(self._as_parameter_, block)
-
-    def drop_block(self, block):
-        """Remove a block from the executor pool."""
-        return lib.sprk_ctx_drop_block(self._as_parameter_, block)
+    def load_dense(self, path_list, row_size):
+        """Loads data located in given paths distributed across executors."""
+        return SprkDataset(lib.sprk_ctx_load_dense(self._as_parameter_, path_list, row_size), False)
 
     @staticmethod
     def test(verbose):
@@ -120,8 +90,6 @@ known executors."""
 
 
 # sprk_dataset
-lib.sprk_dataset_new.restype = sprk_dataset_p
-lib.sprk_dataset_new.argtypes = [sprk_ctx_p, c_char_p]
 lib.sprk_dataset_destroy.restype = None
 lib.sprk_dataset_destroy.argtypes = [POINTER(sprk_dataset_p)]
 lib.sprk_dataset_checkpoint.restype = None
@@ -137,19 +105,6 @@ class SprkDataset(object):
     """Distributed dataset with fixed set of operations and transformations."""
 
     allow_destruct = False
-    def __init__(self, *args):
-        """Creates a new sprk dataset from a set of input paths."""
-        if len(args) == 2 and type(args[0]) is c_void_p and isinstance(args[1], bool):
-            self._as_parameter_ = cast(args[0], sprk_dataset_p) # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        elif len(args) == 2 and type(args[0]) is sprk_dataset_p and isinstance(args[1], bool):
-            self._as_parameter_ = args[0] # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        else:
-            assert(len(args) == 2)
-            self._as_parameter_ = lib.sprk_dataset_new(args[0], args[1]) # Creation of new raw type
-            self.allow_destruct = True
-
     def __del__(self):
         """Destroy the sprk_dataset."""
         if self.allow_destruct:
@@ -179,288 +134,6 @@ class SprkDataset(object):
     def test(verbose):
         """Self test of this class."""
         return lib.sprk_dataset_test(verbose)
-
-
-# sprk_block
-lib.sprk_block_new.restype = sprk_block_p
-lib.sprk_block_new.argtypes = [sprk_descriptor_p, zlist_p]
-lib.sprk_block_destroy.restype = None
-lib.sprk_block_destroy.argtypes = [POINTER(sprk_block_p)]
-lib.sprk_block_queue_transform.restype = None
-lib.sprk_block_queue_transform.argtypes = [sprk_block_p, sprk_transform_p]
-lib.sprk_block_descriptor.restype = sprk_descriptor_p
-lib.sprk_block_descriptor.argtypes = [sprk_block_p]
-lib.sprk_block_test.restype = None
-lib.sprk_block_test.argtypes = [c_bool]
-
-class SprkBlock(object):
-    """Describes a block of data, where it originates on disk (descriptor)
-and the transformations that are applied to it."""
-
-    allow_destruct = False
-    def __init__(self, *args):
-        """Creates a new block"""
-        if len(args) == 2 and type(args[0]) is c_void_p and isinstance(args[1], bool):
-            self._as_parameter_ = cast(args[0], sprk_block_p) # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        elif len(args) == 2 and type(args[0]) is sprk_block_p and isinstance(args[1], bool):
-            self._as_parameter_ = args[0] # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        else:
-            assert(len(args) == 2)
-            self._as_parameter_ = lib.sprk_block_new(args[0], args[1]) # Creation of new raw type
-            self.allow_destruct = True
-
-    def __del__(self):
-        """Destroy the sprk_block."""
-        if self.allow_destruct:
-            lib.sprk_block_destroy(byref(self._as_parameter_))
-
-    def __bool__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 3
-        return self._as_parameter_.__bool__()
-
-    def __nonzero__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 2
-        return self._as_parameter_.__nonzero__()
-
-    def queue_transform(self, transform):
-        """Queue a transformation to be applied to this block."""
-        return lib.sprk_block_queue_transform(self._as_parameter_, transform)
-
-    def descriptor(self):
-        """"""
-        return SprkDescriptor(lib.sprk_block_descriptor(self._as_parameter_), False)
-
-    @staticmethod
-    def test(verbose):
-        """Self test of this class."""
-        return lib.sprk_block_test(verbose)
-
-
-# sprk_blockdata
-lib.sprk_blockdata_new.restype = sprk_blockdata_p
-lib.sprk_blockdata_new.argtypes = [sprk_block_p, None, number_p]
-lib.sprk_blockdata_destroy.restype = None
-lib.sprk_blockdata_destroy.argtypes = [POINTER(sprk_blockdata_p)]
-lib.sprk_blockdata_queue_transform.restype = None
-lib.sprk_blockdata_queue_transform.argtypes = [sprk_blockdata_p, sprk_transform_p]
-lib.sprk_blockdata_descriptor.restype = sprk_descriptor_p
-lib.sprk_blockdata_descriptor.argtypes = [sprk_blockdata_p]
-lib.sprk_blockdata_test.restype = None
-lib.sprk_blockdata_test.argtypes = [c_bool]
-
-class SprkBlockdata(object):
-    """TODO"""
-
-    allow_destruct = False
-    def __init__(self, *args):
-        """Create a new sprk_blockdata."""
-        if len(args) == 2 and type(args[0]) is c_void_p and isinstance(args[1], bool):
-            self._as_parameter_ = cast(args[0], sprk_blockdata_p) # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        elif len(args) == 2 and type(args[0]) is sprk_blockdata_p and isinstance(args[1], bool):
-            self._as_parameter_ = args[0] # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        else:
-            assert(len(args) == 3)
-            self._as_parameter_ = lib.sprk_blockdata_new(args[0], args[1], args[2]) # Creation of new raw type
-            self.allow_destruct = True
-
-    def __del__(self):
-        """Destroy the sprk_blockdata."""
-        if self.allow_destruct:
-            lib.sprk_blockdata_destroy(byref(self._as_parameter_))
-
-    def __bool__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 3
-        return self._as_parameter_.__bool__()
-
-    def __nonzero__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 2
-        return self._as_parameter_.__nonzero__()
-
-    def queue_transform(self, transform):
-        """Queue a transformation to be applied to this block."""
-        return lib.sprk_blockdata_queue_transform(self._as_parameter_, transform)
-
-    def descriptor(self):
-        """"""
-        return SprkDescriptor(lib.sprk_blockdata_descriptor(self._as_parameter_), False)
-
-    @staticmethod
-    def test(verbose):
-        """Self test of this class."""
-        return lib.sprk_blockdata_test(verbose)
-
-
-# sprk_descriptor
-lib.sprk_descriptor_new.restype = sprk_descriptor_p
-lib.sprk_descriptor_new.argtypes = [c_char_p, number_p, number_p, number_p]
-lib.sprk_descriptor_destroy.restype = None
-lib.sprk_descriptor_destroy.argtypes = [POINTER(sprk_descriptor_p)]
-lib.sprk_descriptor_uri.restype = c_char_p
-lib.sprk_descriptor_uri.argtypes = [sprk_descriptor_p]
-lib.sprk_descriptor_offset.restype = number_p
-lib.sprk_descriptor_offset.argtypes = [sprk_descriptor_p]
-lib.sprk_descriptor_length.restype = number_p
-lib.sprk_descriptor_length.argtypes = [sprk_descriptor_p]
-lib.sprk_descriptor_row_size.restype = number_p
-lib.sprk_descriptor_row_size.argtypes = [sprk_descriptor_p]
-lib.sprk_descriptor_test.restype = None
-lib.sprk_descriptor_test.argtypes = [c_bool]
-
-class SprkDescriptor(object):
-    """"""
-
-    allow_destruct = False
-    def __init__(self, *args):
-        """Creates a new descriptor.
-Creates a new descriptor."""
-        if len(args) == 2 and type(args[0]) is c_void_p and isinstance(args[1], bool):
-            self._as_parameter_ = cast(args[0], sprk_descriptor_p) # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        elif len(args) == 2 and type(args[0]) is sprk_descriptor_p and isinstance(args[1], bool):
-            self._as_parameter_ = args[0] # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        else:
-            assert(len(args) == 4)
-            self._as_parameter_ = lib.sprk_descriptor_new(args[0], args[1], args[2], args[3]) # Creation of new raw type
-            self.allow_destruct = True
-
-    def __del__(self):
-        """Destroy the sprk_descriptor."""
-        if self.allow_destruct:
-            lib.sprk_descriptor_destroy(byref(self._as_parameter_))
-
-    def __bool__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 3
-        return self._as_parameter_.__bool__()
-
-    def __nonzero__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 2
-        return self._as_parameter_.__nonzero__()
-
-    def uri(self):
-        """"""
-        return lib.sprk_descriptor_uri(self._as_parameter_)
-
-    def offset(self):
-        """"""
-        return lib.sprk_descriptor_offset(self._as_parameter_)
-
-    def length(self):
-        """"""
-        return lib.sprk_descriptor_length(self._as_parameter_)
-
-    def row_size(self):
-        """"""
-        return lib.sprk_descriptor_row_size(self._as_parameter_)
-
-    @staticmethod
-    def test(verbose):
-        """Self test of this class."""
-        return lib.sprk_descriptor_test(verbose)
-
-
-# sprk_transform
-lib.sprk_transform_new.restype = sprk_transform_p
-lib.sprk_transform_new.argtypes = []
-lib.sprk_transform_destroy.restype = None
-lib.sprk_transform_destroy.argtypes = [POINTER(sprk_transform_p)]
-lib.sprk_transform_test.restype = None
-lib.sprk_transform_test.argtypes = [c_bool]
-
-class SprkTransform(object):
-    """"""
-
-    allow_destruct = False
-    def __init__(self, *args):
-        """Creates a new transformation."""
-        if len(args) == 2 and type(args[0]) is c_void_p and isinstance(args[1], bool):
-            self._as_parameter_ = cast(args[0], sprk_transform_p) # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        elif len(args) == 2 and type(args[0]) is sprk_transform_p and isinstance(args[1], bool):
-            self._as_parameter_ = args[0] # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        else:
-            assert(len(args) == 0)
-            self._as_parameter_ = lib.sprk_transform_new() # Creation of new raw type
-            self.allow_destruct = True
-
-    def __del__(self):
-        """Destroy the sprk_transform."""
-        if self.allow_destruct:
-            lib.sprk_transform_destroy(byref(self._as_parameter_))
-
-    def __bool__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 3
-        return self._as_parameter_.__bool__()
-
-    def __nonzero__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 2
-        return self._as_parameter_.__nonzero__()
-
-    @staticmethod
-    def test(verbose):
-        """Self test of this class."""
-        return lib.sprk_transform_test(verbose)
-
-
-# sprk_block_manager
-lib.sprk_block_manager_new.restype = sprk_block_manager_p
-lib.sprk_block_manager_new.argtypes = []
-lib.sprk_block_manager_destroy.restype = None
-lib.sprk_block_manager_destroy.argtypes = [POINTER(sprk_block_manager_p)]
-lib.sprk_block_manager_read_and_store_block.restype = sprk_blockdata_p
-lib.sprk_block_manager_read_and_store_block.argtypes = [sprk_block_manager_p, c_char_p, POINTER(sprk_block_p)]
-lib.sprk_block_manager_get_block.restype = sprk_blockdata_p
-lib.sprk_block_manager_get_block.argtypes = [sprk_block_manager_p, c_char_p]
-lib.sprk_block_manager_test.restype = None
-lib.sprk_block_manager_test.argtypes = [c_bool]
-
-class SprkBlockManager(object):
-    """"""
-
-    allow_destruct = False
-    def __init__(self, *args):
-        """Create a new block manager"""
-        if len(args) == 2 and type(args[0]) is c_void_p and isinstance(args[1], bool):
-            self._as_parameter_ = cast(args[0], sprk_block_manager_p) # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        elif len(args) == 2 and type(args[0]) is sprk_block_manager_p and isinstance(args[1], bool):
-            self._as_parameter_ = args[0] # Conversion from raw type to binding
-            self.allow_destruct = args[1] # This is a 'fresh' value, owned by us
-        else:
-            assert(len(args) == 0)
-            self._as_parameter_ = lib.sprk_block_manager_new() # Creation of new raw type
-            self.allow_destruct = True
-
-    def __del__(self):
-        """Destroy the block manager"""
-        if self.allow_destruct:
-            lib.sprk_block_manager_destroy(byref(self._as_parameter_))
-
-    def __bool__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 3
-        return self._as_parameter_.__bool__()
-
-    def __nonzero__(self):
-        "Determine whether the object is valid by converting to boolean" # Python 2
-        return self._as_parameter_.__nonzero__()
-
-    def read_and_store_block(self, block_id, block_ref):
-        """"""
-        return SprkBlockdata(lib.sprk_block_manager_read_and_store_block(self._as_parameter_, block_id, byref(sprk_block_p.from_param(block_ref))), False)
-
-    def get_block(self, block_id):
-        """"""
-        return SprkBlockdata(lib.sprk_block_manager_get_block(self._as_parameter_, block_id), False)
-
-    @staticmethod
-    def test(verbose):
-        """Self test of this class."""
-        return lib.sprk_block_manager_test(verbose)
 
 ################################################################################
 #  THIS FILE IS 100% GENERATED BY ZPROJECT; DO NOT EDIT EXCEPT EXPERIMENTALLY  #

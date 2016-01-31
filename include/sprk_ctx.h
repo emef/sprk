@@ -1,13 +1,13 @@
 /*  =========================================================================
     sprk_ctx - sprk context; public API to work with distributed datasets.
 
-    Copyright (c) the Contributors as noted in the AUTHORS file.       
-    This file is part of CZMQ, the high-level C binding for 0MQ:       
-    http://czmq.zeromq.org.                                            
-                                                                       
+    Copyright (c) the Contributors as noted in the AUTHORS file.
+    This file is part of CZMQ, the high-level C binding for 0MQ:
+    http://czmq.zeromq.org.
+
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/.           
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
     =========================================================================
 */
 
@@ -25,19 +25,15 @@ extern "C" {
 //  Creates a new sprk context which facilitates communication with
 //  known executors.                                               
 SPRK_EXPORT sprk_ctx_t *
-    sprk_ctx_new (void);
+    sprk_ctx_new (const char *broker_uri);
 
 //  Destroy the sprk_ctx.
 SPRK_EXPORT void
     sprk_ctx_destroy (sprk_ctx_t **self_p);
 
-//  Assign a block to the executor pool, giving it a unique ID.
-SPRK_EXPORT const char *
-    sprk_ctx_assign_block (sprk_ctx_t *self, sprk_block_t *block);
-
-//  Remove a block from the executor pool.
-SPRK_EXPORT void
-    sprk_ctx_drop_block (sprk_ctx_t *self, sprk_block_t *block);
+//  Loads data located in given paths distributed across executors.
+SPRK_EXPORT sprk_dataset_t *
+    sprk_ctx_load_dense (sprk_ctx_t *self, const char *path_list, uint32_t row_size);
 
 //  Self test of this class.
 SPRK_EXPORT void

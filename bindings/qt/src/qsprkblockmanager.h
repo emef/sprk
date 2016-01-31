@@ -24,10 +24,10 @@ public:
     ~QSprkBlockManager ();
 
     //  
-    QSprkBlockdata * readAndStoreBlock (const QString &blockId, QSprkBlock *blockRef);
+    sprk_blockdata_t * readAndStoreBlock (const QString &blockId, QSprkBlock *blockRef);
 
     //  
-    QSprkBlockdata * getBlock (const QString &blockId);
+    sprk_blockdata_t * getBlock (const QString &blockId);
 
     //  Self test of this class.
     static void test (bool verbose);

@@ -1,6 +1,6 @@
 The following ABNF grammar defines the sprk msg protocol:
 
-    sprk_msg        = *( ASSIGN-BLOCK )
+    sprk_msg        = *( ASSIGN-BLOCK | BLOCK-ASSIGNED )
 
     ;  No description                                                        
 
@@ -13,6 +13,11 @@ The following ABNF grammar defines the sprk msg protocol:
     offset          = number-8              ; 
     length          = number-8              ; 
     row_size        = number-4              ; 
+
+    ;  No description                                                        
+
+    BLOCK-ASSIGNED  = signature %d2 block_id
+    block_id        = string                ; 
 
     ; Strings are always length + text contents
     string          = number-1 *VCHAR

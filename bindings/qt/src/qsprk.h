@@ -30,20 +30,10 @@
 //  Opaque class structures to allow forward references
 class QSprkCtx;
 class QSprkDataset;
-class QSprkBlock;
-class QSprkBlockdata;
-class QSprkDescriptor;
-class QSprkTransform;
-class QSprkBlockManager;
 
 //  Public API classes
 #include "qsprkctx.h"
 #include "qsprkdataset.h"
-#include "qsprkblock.h"
-#include "qsprkblockdata.h"
-#include "qsprkdescriptor.h"
-#include "qsprktransform.h"
-#include "qsprkblockmanager.h"
 
 #endif //  Q_SPRK_H
 /*

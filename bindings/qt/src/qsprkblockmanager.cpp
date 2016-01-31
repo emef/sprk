@@ -31,17 +31,17 @@ QSprkBlockManager::~QSprkBlockManager ()
 
 ///
 //  
-QSprkBlockdata * QSprkBlockManager::readAndStoreBlock (const QString &blockId, QSprkBlock *blockRef)
+sprk_blockdata_t * QSprkBlockManager::readAndStoreBlock (const QString &blockId, QSprkBlock *blockRef)
 {
-    QSprkBlockdata *rv = new QSprkBlockdata (sprk_block_manager_read_and_store_block (self, blockId.toUtf8().data(), &blockRef->self));
+    sprk_blockdata_t * rv = sprk_block_manager_read_and_store_block (self, blockId.toUtf8().data(), &blockRef->self);
     return rv;
 }
 
 ///
 //  
-QSprkBlockdata * QSprkBlockManager::getBlock (const QString &blockId)
+sprk_blockdata_t * QSprkBlockManager::getBlock (const QString &blockId)
 {
-    QSprkBlockdata *rv = new QSprkBlockdata (sprk_block_manager_get_block (self, blockId.toUtf8().data()));
+    sprk_blockdata_t * rv = sprk_block_manager_get_block (self, blockId.toUtf8().data());
     return rv;
 }
 

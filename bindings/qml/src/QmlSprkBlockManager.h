@@ -29,10 +29,10 @@ public:
     
 public slots:
     //  
-    QmlSprkBlockdata *readAndStoreBlock (const QString &blockId, QmlSprkBlock *blockRef);
+    sprk_blockdata_t *readAndStoreBlock (const QString &blockId, QmlSprkBlock *blockRef);
 
     //  
-    QmlSprkBlockdata *getBlock (const QString &blockId);
+    sprk_blockdata_t *getBlock (const QString &blockId);
 };
 
 class QmlSprkBlockManagerAttached : public QObject

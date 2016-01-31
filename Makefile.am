@@ -27,8 +27,14 @@ noinst_LTLIBRARIES =
 TESTS =
 
 EXTRA_DIST = \
+    src/block.h \
+    src/block_data.h \
+    src/block_manager.h \
+    src/broker.h \
+    src/descriptor.h \
+    src/transform.h \
     src/executor.h \
-    src/blockworker.h \
+    src/block_worker.h \
     src/sprk_classes.h \
     README.md \
     version.sh

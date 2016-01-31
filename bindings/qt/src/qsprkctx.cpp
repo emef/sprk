@@ -18,9 +18,9 @@ QSprkCtx::QSprkCtx (sprk_ctx_t *self, QObject *qObjParent) : QObject (qObjParent
 ///
 //  Creates a new sprk context which facilitates communication with
 //  known executors.                                               
-QSprkCtx::QSprkCtx (QObject *qObjParent) : QObject (qObjParent)
+QSprkCtx::QSprkCtx (const QString &brokerUri, QObject *qObjParent) : QObject (qObjParent)
 {
-    this->self = sprk_ctx_new ();
+    this->self = sprk_ctx_new (brokerUri.toUtf8().data());
 }
 
 ///
@@ -31,19 +31,11 @@ QSprkCtx::~QSprkCtx ()
 }
 
 ///
-//  Assign a block to the executor pool, giving it a unique ID.
-const QString QSprkCtx::assignBlock (QSprkBlock *block)
+//  Loads data located in given paths distributed across executors.
+QSprkDataset * QSprkCtx::loadDense (const QString &pathList, quint32 rowSize)
 {
-    const QString rv = QString (sprk_ctx_assign_block (self, block->self));
+    QSprkDataset *rv = new QSprkDataset (sprk_ctx_load_dense (self, pathList.toUtf8().data(), (uint32_t) rowSize));
     return rv;
-}
-
-///
-//  Remove a block from the executor pool.
-void QSprkCtx::dropBlock (QSprkBlock *block)
-{
-    sprk_ctx_drop_block (self, block->self);
-    
 }
 
 ///

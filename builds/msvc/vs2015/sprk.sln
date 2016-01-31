@@ -2,7 +2,17 @@ Microsoft Visual Studio Solution File, Format Version 14.00
 # builds/msvc/vs2015
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsprk", "libsprk\libsprk.vcxproj", "{0C4A2E28-8C9E-4B27-85D9-BB679AD84AC7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sprk_broker", "sprk_broker\sprk_broker.vcxproj", "{A5497C4B-1CD1-4779-9458-2CF7908E7E26}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sprk_executor", "sprk_executor\sprk_executor.vcxproj", "{A5497C4B-1CD1-4779-9458-2CF7908E7E26}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inprocess", "inprocess\inprocess.vcxproj", "{A5497C4B-1CD1-4779-9458-2CF7908E7E26}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "outprocess", "outprocess\outprocess.vcxproj", "{A5497C4B-1CD1-4779-9458-2CF7908E7E26}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gendata", "gendata\gendata.vcxproj", "{A5497C4B-1CD1-4779-9458-2CF7908E7E26}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "topology", "topology\topology.vcxproj", "{A5497C4B-1CD1-4779-9458-2CF7908E7E26}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sprk_selftest", "sprk_selftest\sprk_selftest.vcxproj", "{A5497C4B-1CD1-4779-9458-2CF7908E7E26}"
 EndProject

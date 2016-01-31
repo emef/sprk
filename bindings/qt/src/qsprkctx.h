@@ -19,16 +19,13 @@ public:
 
     //  Creates a new sprk context which facilitates communication with
     //  known executors.                                               
-    explicit QSprkCtx (QObject *qObjParent = 0);
+    explicit QSprkCtx (const QString &brokerUri, QObject *qObjParent = 0);
 
     //  Destroy the sprk_ctx.
     ~QSprkCtx ();
 
-    //  Assign a block to the executor pool, giving it a unique ID.
-    const QString assignBlock (QSprkBlock *block);
-
-    //  Remove a block from the executor pool.
-    void dropBlock (QSprkBlock *block);
+    //  Loads data located in given paths distributed across executors.
+    QSprkDataset * loadDense (const QString &pathList, quint32 rowSize);
 
     //  Self test of this class.
     static void test (bool verbose);

@@ -39,14 +39,6 @@ void QmlSprkDatasetAttached::test (bool verbose) {
 };
 
 ///
-//  Creates a new sprk dataset from a set of input paths.
-QmlSprkDataset *QmlSprkDatasetAttached::construct (QmlSprkCtx *context, const QString &pathList) {
-    QmlSprkDataset *qmlSelf = new QmlSprkDataset ();
-    qmlSelf->self = sprk_dataset_new (context->self, pathList.toUtf8().data());
-    return qmlSelf;
-};
-
-///
 //  Destroy the sprk_dataset.
 void QmlSprkDatasetAttached::destruct (QmlSprkDataset *qmlSelf) {
     sprk_dataset_destroy (&qmlSelf->self);

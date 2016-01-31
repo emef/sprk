@@ -13,19 +13,22 @@
     <ClCompile Include="..\..\..\..\src\sprk_dataset.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\sprk_block.c">
+    <ClCompile Include="..\..\..\..\src\block.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\sprk_blockdata.c">
+    <ClCompile Include="..\..\..\..\src\block_data.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\sprk_descriptor.c">
+    <ClCompile Include="..\..\..\..\src\block_manager.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\sprk_transform.c">
+    <ClCompile Include="..\..\..\..\src\broker.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\sprk_block_manager.c">
+    <ClCompile Include="..\..\..\..\src\descriptor.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\transform.c">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\sprk_msg.c">
@@ -34,7 +37,7 @@
     <ClCompile Include="..\..\..\..\src\executor.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\blockworker.c">
+    <ClCompile Include="..\..\..\..\src\block_worker.c">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

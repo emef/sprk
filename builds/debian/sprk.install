@@ -1,0 +1,8 @@
+debian/tmp/usr/bin/sprk_broker
+debian/tmp/usr/bin/sprk_executor
+debian/tmp/usr/bin/inprocess
+debian/tmp/usr/bin/outprocess
+debian/tmp/usr/bin/gendata
+debian/tmp/usr/bin/topology
+
+

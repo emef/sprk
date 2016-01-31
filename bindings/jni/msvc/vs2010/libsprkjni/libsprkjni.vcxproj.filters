@@ -13,12 +13,6 @@
     <ClCompile Include="..\..\..\src\main\c\org_zeromq_sprk_SprkDataset.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\main\c\org_zeromq_sprk_Descriptor.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\main\c\org_zeromq_sprk_Transformation.c">
-      <Filter>src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\include\sprk.h">
@@ -28,12 +22,6 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\native\include\org_zeromq_sprk_SprkDataset.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\native\include\org_zeromq_sprk_Descriptor.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\native\include\org_zeromq_sprk_Transformation.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

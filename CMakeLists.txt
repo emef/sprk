@@ -136,14 +136,15 @@ set (sprk_headers
     include/sprk.h
     include/sprk_ctx.h
     include/sprk_dataset.h
-    include/sprk_block.h
-    include/sprk_blockdata.h
-    include/sprk_descriptor.h
-    include/sprk_transform.h
-    include/sprk_block_manager.h
     include/sprk_msg.h
+    src/block.h
+    src/block_data.h
+    src/block_manager.h
+    src/broker.h
+    src/descriptor.h
+    src/transform.h
     src/executor.h
-    src/blockworker.h
+    src/block_worker.h
 )
 source_group ("Header Files" FILES ${sprk_headers})
 install(FILES ${sprk_headers} DESTINATION include)
@@ -155,14 +156,15 @@ include_directories("${SOURCE_DIR}/src" "${SOURCE_DIR}/include")
 set (sprk_sources
     src/sprk_ctx.c
     src/sprk_dataset.c
-    src/sprk_block.c
-    src/sprk_blockdata.c
-    src/sprk_descriptor.c
-    src/sprk_transform.c
-    src/sprk_block_manager.c
+    src/block.c
+    src/block_data.c
+    src/block_manager.c
+    src/broker.c
+    src/descriptor.c
+    src/transform.c
     src/sprk_msg.c
     src/executor.c
-    src/blockworker.c
+    src/block_worker.c
 )
 source_group("Source Files" FILES ${sprk_sources})
 if (NOT DEFINED BUILD_SHARED_LIBS)
@@ -207,6 +209,36 @@ install(
 # executables
 ########################################################################
 add_executable(
+    sprk_broker
+    "${SOURCE_DIR}/src/sprk_broker.c"
+)
+target_link_libraries(
+    sprk_broker
+    sprk
+    ${LIBZMQ_LIBRARIES}
+    ${CZMQ_LIBRARIES}
+    ${OPTIONAL_LIBRARIES}
+)
+set_target_properties(
+    sprk_broker
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SOURCE_DIR}/src"
+)
+add_executable(
+    sprk_executor
+    "${SOURCE_DIR}/src/sprk_executor.c"
+)
+target_link_libraries(
+    sprk_executor
+    sprk
+    ${LIBZMQ_LIBRARIES}
+    ${CZMQ_LIBRARIES}
+    ${OPTIONAL_LIBRARIES}
+)
+set_target_properties(
+    sprk_executor
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SOURCE_DIR}/src"
+)
+add_executable(
     inprocess
     "${SOURCE_DIR}/src/inprocess.c"
 )
@@ -219,6 +251,51 @@ target_link_libraries(
 )
 set_target_properties(
     inprocess
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SOURCE_DIR}/src"
+)
+add_executable(
+    outprocess
+    "${SOURCE_DIR}/src/outprocess.c"
+)
+target_link_libraries(
+    outprocess
+    sprk
+    ${LIBZMQ_LIBRARIES}
+    ${CZMQ_LIBRARIES}
+    ${OPTIONAL_LIBRARIES}
+)
+set_target_properties(
+    outprocess
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SOURCE_DIR}/src"
+)
+add_executable(
+    gendata
+    "${SOURCE_DIR}/src/gendata.c"
+)
+target_link_libraries(
+    gendata
+    sprk
+    ${LIBZMQ_LIBRARIES}
+    ${CZMQ_LIBRARIES}
+    ${OPTIONAL_LIBRARIES}
+)
+set_target_properties(
+    gendata
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SOURCE_DIR}/src"
+)
+add_executable(
+    topology
+    "${SOURCE_DIR}/src/topology.c"
+)
+target_link_libraries(
+    topology
+    sprk
+    ${LIBZMQ_LIBRARIES}
+    ${CZMQ_LIBRARIES}
+    ${OPTIONAL_LIBRARIES}
+)
+set_target_properties(
+    topology
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${SOURCE_DIR}/src"
 )
 add_executable(
@@ -246,14 +323,15 @@ set(TOTAL_TIMEOUT 20 CACHE STRING "Timout of the total testsuite")
 set(TEST_CLASSES
     sprk_ctx
     sprk_dataset
-    sprk_block
-    sprk_blockdata
-    sprk_descriptor
-    sprk_transform
-    sprk_block_manager
+    block
+    block_data
+    block_manager
+    broker
+    descriptor
+    transform
     sprk_msg
     executor
-    blockworker
+    block_worker
 )
 
 foreach(TEST_CLASS ${TEST_CLASSES})

@@ -94,25 +94,23 @@ module Sprk
       #
       # @param block_id [String, #to_s, nil]
       # @param block_ref [#__ptr_give_ref]
-      # @return [Blockdata]
+      # @return [::FFI::Pointer]
       def read_and_store_block(block_id, block_ref)
         raise DestroyedError unless @ptr
         self_p = @ptr
         block_ref = block_ref.__ptr_give_ref
         result = ::Sprk::FFI.sprk_block_manager_read_and_store_block(self_p, block_id, block_ref)
-        result = Blockdata.__new result, false
         result
       end
 
       # 
       #
       # @param block_id [String, #to_s, nil]
-      # @return [Blockdata]
+      # @return [::FFI::Pointer]
       def get_block(block_id)
         raise DestroyedError unless @ptr
         self_p = @ptr
         result = ::Sprk::FFI.sprk_block_manager_get_block(self_p, block_id)
-        result = Blockdata.__new result, false
         result
       end
 

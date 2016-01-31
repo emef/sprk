@@ -10,18 +10,14 @@
 
 ///
 //  
-QmlSprkBlockdata *QmlSprkBlockManager::readAndStoreBlock (const QString &blockId, QmlSprkBlock *blockRef) {
-    QmlSprkBlockdata *retQ_ = new QmlSprkBlockdata ();
-    retQ_->self = sprk_block_manager_read_and_store_block (self, blockId.toUtf8().data(), &blockRef->self);
-    return retQ_;
+sprk_blockdata_t *QmlSprkBlockManager::readAndStoreBlock (const QString &blockId, QmlSprkBlock *blockRef) {
+    return sprk_block_manager_read_and_store_block (self, blockId.toUtf8().data(), &blockRef->self);
 };
 
 ///
 //  
-QmlSprkBlockdata *QmlSprkBlockManager::getBlock (const QString &blockId) {
-    QmlSprkBlockdata *retQ_ = new QmlSprkBlockdata ();
-    retQ_->self = sprk_block_manager_get_block (self, blockId.toUtf8().data());
-    return retQ_;
+sprk_blockdata_t *QmlSprkBlockManager::getBlock (const QString &blockId) {
+    return sprk_block_manager_get_block (self, blockId.toUtf8().data());
 };
 
 

@@ -75,9 +75,10 @@ module Sprk
 
       # Creates a new sprk context which facilitates communication with
       # known executors.                                               
+      # @param broker_uri [String, #to_s, nil]
       # @return [Sprk::Ctx]
-      def self.new()
-        ptr = ::Sprk::FFI.sprk_ctx_new()
+      def self.new(broker_uri)
+        ptr = ::Sprk::FFI.sprk_ctx_new(broker_uri)
         __new ptr
       end
 
@@ -91,27 +92,17 @@ module Sprk
         result
       end
 
-      # Assign a block to the executor pool, giving it a unique ID.
+      # Loads data located in given paths distributed across executors.
       #
-      # @param block [Block, #__ptr]
-      # @return [String]
-      def assign_block(block)
+      # @param path_list [String, #to_s, nil]
+      # @param row_size [Integer, #to_int, #to_i]
+      # @return [Dataset]
+      def load_dense(path_list, row_size)
         raise DestroyedError unless @ptr
         self_p = @ptr
-        block = block.__ptr if block
-        result = ::Sprk::FFI.sprk_ctx_assign_block(self_p, block)
-        result
-      end
-
-      # Remove a block from the executor pool.
-      #
-      # @param block [Block, #__ptr]
-      # @return [void]
-      def drop_block(block)
-        raise DestroyedError unless @ptr
-        self_p = @ptr
-        block = block.__ptr if block
-        result = ::Sprk::FFI.sprk_ctx_drop_block(self_p, block)
+        row_size = Integer(row_size)
+        result = ::Sprk::FFI.sprk_ctx_load_dense(self_p, path_list, row_size)
+        result = Dataset.__new result, false
         result
       end
 

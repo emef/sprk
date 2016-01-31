@@ -16,25 +16,21 @@ include_HEADERS = \
     include/sprk.h \
     include/sprk_ctx.h \
     include/sprk_dataset.h \
-    include/sprk_block.h \
-    include/sprk_blockdata.h \
-    include/sprk_descriptor.h \
-    include/sprk_transform.h \
-    include/sprk_block_manager.h \
     include/sprk_msg.h \
     include/sprk_library.h
 
 src_libsprk_la_SOURCES = \
     src/sprk_ctx.c \
     src/sprk_dataset.c \
-    src/sprk_block.c \
-    src/sprk_blockdata.c \
-    src/sprk_descriptor.c \
-    src/sprk_transform.c \
-    src/sprk_block_manager.c \
+    src/block.c \
+    src/block_data.c \
+    src/block_manager.c \
+    src/broker.c \
+    src/descriptor.c \
+    src/transform.c \
     src/sprk_msg.c \
     src/executor.c \
-    src/blockworker.c \
+    src/block_worker.c \
     src/platform.h
 
 src_libsprk_la_CPPFLAGS = ${AM_CPPFLAGS}
@@ -57,6 +53,24 @@ endif
 
 src_libsprk_la_LIBADD = ${project_libs}
 
+if WITH_SPRK_BROKER
+bin_PROGRAMS += src/sprk_broker
+src_sprk_broker_CPPFLAGS = ${AM_CPPFLAGS}
+src_sprk_broker_LDADD = ${program_libs}
+src_sprk_broker_SOURCES = src/sprk_broker.c
+if WITH_SYSTEMD
+endif #WITH_SYSTEMD
+
+endif #WITH_SPRK_BROKER
+if WITH_SPRK_EXECUTOR
+bin_PROGRAMS += src/sprk_executor
+src_sprk_executor_CPPFLAGS = ${AM_CPPFLAGS}
+src_sprk_executor_LDADD = ${program_libs}
+src_sprk_executor_SOURCES = src/sprk_executor.c
+if WITH_SYSTEMD
+endif #WITH_SYSTEMD
+
+endif #WITH_SPRK_EXECUTOR
 if WITH_INPROCESS
 bin_PROGRAMS += src/inprocess
 src_inprocess_CPPFLAGS = ${AM_CPPFLAGS}
@@ -66,6 +80,33 @@ if WITH_SYSTEMD
 endif #WITH_SYSTEMD
 
 endif #WITH_INPROCESS
+if WITH_OUTPROCESS
+bin_PROGRAMS += src/outprocess
+src_outprocess_CPPFLAGS = ${AM_CPPFLAGS}
+src_outprocess_LDADD = ${program_libs}
+src_outprocess_SOURCES = src/outprocess.c
+if WITH_SYSTEMD
+endif #WITH_SYSTEMD
+
+endif #WITH_OUTPROCESS
+if WITH_GENDATA
+bin_PROGRAMS += src/gendata
+src_gendata_CPPFLAGS = ${AM_CPPFLAGS}
+src_gendata_LDADD = ${program_libs}
+src_gendata_SOURCES = src/gendata.c
+if WITH_SYSTEMD
+endif #WITH_SYSTEMD
+
+endif #WITH_GENDATA
+if WITH_TOPOLOGY
+bin_PROGRAMS += src/topology
+src_topology_CPPFLAGS = ${AM_CPPFLAGS}
+src_topology_LDADD = ${program_libs}
+src_topology_SOURCES = src/topology.c
+if WITH_SYSTEMD
+endif #WITH_SYSTEMD
+
+endif #WITH_TOPOLOGY
 if WITH_SPRK_SELFTEST
 check_PROGRAMS += src/sprk_selftest
 noinst_PROGRAMS += src/sprk_selftest
@@ -83,20 +124,16 @@ dist_api_DATA = \
     api/license.xml \
     api/sprk_ctx.xml \
     api/license.xml \
-    api/sprk_dataset.xml \
-    api/license.xml \
-    api/sprk_block.xml \
-    api/license.xml \
-    api/sprk_blockdata.xml \
-    api/license.xml \
-    api/sprk_descriptor.xml \
-    api/license.xml \
-    api/sprk_transform.xml \
-    api/sprk_block_manager.xml
+    api/sprk_dataset.xml
 
 # define custom target for all products of /src
 src:
+	src/sprk_broker \
+	src/sprk_executor \
 	src/inprocess \
+	src/outprocess \
+	src/gendata \
+	src/topology \
 	src/sprk_selftest \
 	src/libsprk.la
 

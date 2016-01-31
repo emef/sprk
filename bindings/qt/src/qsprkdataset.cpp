@@ -16,13 +16,6 @@ QSprkDataset::QSprkDataset (sprk_dataset_t *self, QObject *qObjParent) : QObject
 
 
 ///
-//  Creates a new sprk dataset from a set of input paths.
-QSprkDataset::QSprkDataset (QSprkCtx *context, const QString &pathList, QObject *qObjParent) : QObject (qObjParent)
-{
-    this->self = sprk_dataset_new (context->self, pathList.toUtf8().data());
-}
-
-///
 //  Destroy the sprk_dataset.
 QSprkDataset::~QSprkDataset ()
 {

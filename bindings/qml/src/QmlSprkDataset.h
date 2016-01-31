@@ -52,9 +52,6 @@ public slots:
     //  Self test of this class.
     void test (bool verbose);
 
-    //  Creates a new sprk dataset from a set of input paths.
-    QmlSprkDataset *construct (QmlSprkCtx *context, const QString &pathList);
-
     //  Destroy the sprk_dataset.
     void destruct (QmlSprkDataset *qmlSelf);
 };

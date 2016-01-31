@@ -1,6 +1,6 @@
 Format:         1.0
 Source:         sprk
-Version:        0.1.0-1
+Version:        0.0.0-1
 Binary:         libsprk0, sprk-dev
 Architecture:   any all
 Maintainer:     John Doe <John.Doe@example.com>

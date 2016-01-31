@@ -262,7 +262,7 @@
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
       </File>
-      <File RelativePath="..\..\..\..\src\sprk_block.c">
+      <File RelativePath="..\..\..\..\src\block.c">
         <FileConfiguration Name="Release|Win32">
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
@@ -294,7 +294,7 @@
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
       </File>
-      <File RelativePath="..\..\..\..\src\sprk_blockdata.c">
+      <File RelativePath="..\..\..\..\src\block_data.c">
         <FileConfiguration Name="Release|Win32">
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
@@ -326,7 +326,7 @@
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
       </File>
-      <File RelativePath="..\..\..\..\src\sprk_descriptor.c">
+      <File RelativePath="..\..\..\..\src\block_manager.c">
         <FileConfiguration Name="Release|Win32">
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
@@ -358,7 +358,7 @@
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
       </File>
-      <File RelativePath="..\..\..\..\src\sprk_transform.c">
+      <File RelativePath="..\..\..\..\src\broker.c">
         <FileConfiguration Name="Release|Win32">
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
@@ -390,7 +390,39 @@
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
       </File>
-      <File RelativePath="..\..\..\..\src\sprk_block_manager.c">
+      <File RelativePath="..\..\..\..\src\descriptor.c">
+        <FileConfiguration Name="Release|Win32">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="Release|x64">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="Debug|Win32">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="Debug|x64">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="DebugDLL|Win32">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="DebugDLL|x64">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="ReleaseDLL|Win32">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="ReleaseDLL|x64">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="RelWithDebInfo|Win32">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+        <FileConfiguration Name="RelWithDebInfo|x64">
+          <Tool Name="VCCLCompilerTool" CompileAs="2" />
+        </FileConfiguration>
+      </File>
+      <File RelativePath="..\..\..\..\src\transform.c">
         <FileConfiguration Name="Release|Win32">
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
@@ -486,7 +518,7 @@
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
       </File>
-      <File RelativePath="..\..\..\..\src\blockworker.c">
+      <File RelativePath="..\..\..\..\src\block_worker.c">
         <FileConfiguration Name="Release|Win32">
           <Tool Name="VCCLCompilerTool" CompileAs="2" />
         </FileConfiguration>
@@ -521,15 +553,16 @@
     </Filter>
     <Filter Name="Header Files">
       <File RelativePath="..\..\..\..\builds\msvc\platform.h" />
+      <File RelativePath="..\..\..\..\src\block.h" />
+      <File RelativePath="..\..\..\..\src\block_data.h" />
+      <File RelativePath="..\..\..\..\src\block_manager.h" />
+      <File RelativePath="..\..\..\..\src\broker.h" />
+      <File RelativePath="..\..\..\..\src\descriptor.h" />
+      <File RelativePath="..\..\..\..\src\transform.h" />
       <File RelativePath="..\..\..\..\src\executor.h" />
-      <File RelativePath="..\..\..\..\src\blockworker.h" />
+      <File RelativePath="..\..\..\..\src\block_worker.h" />
       <File RelativePath="..\..\..\..\include\sprk_ctx.h" />
       <File RelativePath="..\..\..\..\include\sprk_dataset.h" />
-      <File RelativePath="..\..\..\..\include\sprk_block.h" />
-      <File RelativePath="..\..\..\..\include\sprk_blockdata.h" />
-      <File RelativePath="..\..\..\..\include\sprk_descriptor.h" />
-      <File RelativePath="..\..\..\..\include\sprk_transform.h" />
-      <File RelativePath="..\..\..\..\include\sprk_block_manager.h" />
       <File RelativePath="..\..\..\..\include\sprk_msg.h" />
       <File RelativePath="..\..\..\..\include\sprk_library.h" />
       <File RelativePath="..\..\..\..\include\sprk.h" />

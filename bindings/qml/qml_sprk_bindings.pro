@@ -39,21 +39,11 @@ LIBS += -lsprk
 HEADERS += \
   $$SRCDIR/qml_sprk_plugin.h \
   $$SRCDIR/QmlSprkCtx.h \
-  $$SRCDIR/QmlSprkDataset.h \
-  $$SRCDIR/QmlSprkBlock.h \
-  $$SRCDIR/QmlSprkBlockdata.h \
-  $$SRCDIR/QmlSprkDescriptor.h \
-  $$SRCDIR/QmlSprkTransform.h \
-  $$SRCDIR/QmlSprkBlockManager.h 
+  $$SRCDIR/QmlSprkDataset.h 
 
 SOURCES += \
   $$SRCDIR/QmlSprkCtx.cpp \
-  $$SRCDIR/QmlSprkDataset.cpp \
-  $$SRCDIR/QmlSprkBlock.cpp \
-  $$SRCDIR/QmlSprkBlockdata.cpp \
-  $$SRCDIR/QmlSprkDescriptor.cpp \
-  $$SRCDIR/QmlSprkTransform.cpp \
-  $$SRCDIR/QmlSprkBlockManager.cpp 
+  $$SRCDIR/QmlSprkDataset.cpp 
 
 OBJECTS_DIR = $$BUILDDIR/.obj
 MOC_DIR     = $$BUILDDIR/.moc

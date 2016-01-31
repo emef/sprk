@@ -32,7 +32,7 @@ Then in the android directory, run:
 This does the following:
 
 * It compiles the sprk C sources for Android, into a native library libsprk.so in builds/android/
-* It compiles the JNI Java classes into a jar file sprk-jni-0.1.0.jar in bindings/jni/build/libs
+* It compiles the JNI Java classes into a jar file sprk-jni-0.0.0.jar in bindings/jni/build/libs
 * It compiles the JNI C sources for Android, into a native library libsprkjni.so.
 * It combines all these into sprk-android.jar, which you can use in your Android projects.
 
@@ -55,11 +55,25 @@ The resulting libraries (sprkjni.dll, sprkjni.lib) are created in bindings/jni/m
 ## License
 
 
-Copyright (c) the Contributors as noted in the AUTHORS file.
-This file is part of CZMQ, the high-level C binding for 0MQ:
-http://czmq.zeromq.org.
+The MIT License (MIT)
 
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
+Copyright (c) 2016 Matt Forbes
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 

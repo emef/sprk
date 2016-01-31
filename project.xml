@@ -6,16 +6,20 @@
     <include filename = "license.xml" />
     <use project = "czmq" />
 
+    <header name = "sprk_internal" private = "1" />
+
     <!-- driver classes -->
     <class name = "sprk_ctx" />
     <class name = "sprk_dataset" />
 
-    <!-- block classes -->
-    <class name = "sprk_block" />
-    <class name = "sprk_blockdata" />
-    <class name = "sprk_descriptor" />
-    <class name = "sprk_transform" />
-    <class name = "sprk_block_manager" />
+    <!-- internal classes -->
+    <class name = "block" private = "1" />
+    <class name = "block_data" private = "1" />
+    <class name = "block_manager" private = "1" />
+    <class name = "broker" private = "1" />
+    <class name = "descriptor" private = "1" />
+    <class name = "transform" private = "1" />
+
 
     <!-- protocol -->
     <class name = "sprk_msg" />
@@ -27,11 +31,18 @@
       sprk_dataset. Delegates operations to its workers.
     </actor>
 
-    <actor name = "blockworker" private = "1">
+    <actor name = "block_worker" private = "1">
       Worker which operates on a single block at a time.
     </actor>
 
     <!-- executables -->
+    <main name = "sprk_broker" />
+    <main name = "sprk_executor" />
+
     <main name = "inprocess" />
+    <main name = "outprocess" />
+    <main name = "gendata" />
+
+    <main name = "topology" />
 
 </project>

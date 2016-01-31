@@ -10,17 +10,6 @@
 #include "sprk.h"
 #include "../../native/include/org_zeromq_sprk_SprkDataset.h"
 
-JNIEXPORT jlong JNICALL
-Java_org_zeromq_sprk_SprkDataset__1_1new (JNIEnv *env, jclass c, jlong context, jstring path_list)
-{
-    char *path_list_ = (char *) (*env)->GetStringUTFChars (env, path_list, NULL);
-    //  Disable CZMQ signal handling; allow Java to deal with it
-    zsys_handler_set (NULL);
-    jlong new_ = (jlong) (intptr_t) sprk_dataset_new ((sprk_ctx_t *) (intptr_t) context, path_list_);
-    (*env)->ReleaseStringUTFChars (env, path_list, path_list_);
-    return new_;
-}
-
 JNIEXPORT void JNICALL
 Java_org_zeromq_sprk_SprkDataset__1_1destroy (JNIEnv *env, jclass c, jlong self)
 {

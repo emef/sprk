@@ -26,10 +26,14 @@
         descriptor_offset   number 8    
         descriptor_length   number 8    
         descriptor_row_size  number 4   
+
+    BLOCK_ASSIGNED - 
+        block_id            string      
 */
 
 
 #define SPRK_MSG_ASSIGN_BLOCK               1
+#define SPRK_MSG_BLOCK_ASSIGNED             2
 
 #include <czmq.h>
 

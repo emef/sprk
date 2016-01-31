@@ -20,10 +20,10 @@ public class SprkCtx implements AutoCloseable{
     Creates a new sprk context which facilitates communication with
     known executors.                                               
     */
-    native static long __new ();
-    public SprkCtx () {
+    native static long __new (String brokerUri);
+    public SprkCtx (String brokerUri) {
         /*  TODO: if __new fails, self is null...            */
-        self = __new ();
+        self = __new (brokerUri);
     }
     public SprkCtx (long pointer) {
         self = pointer;
@@ -38,18 +38,11 @@ public class SprkCtx implements AutoCloseable{
         self = 0;
     }
     /*
-    Assign a block to the executor pool, giving it a unique ID.
+    Loads data located in given paths distributed across executors.
     */
-    native static String __assignBlock (long self, long block);
-    public String assignBlock (SprkBlock block) {
-        return __assignBlock (self, block.self);
-    }
-    /*
-    Remove a block from the executor pool.
-    */
-    native static void __dropBlock (long self, long block);
-    public void dropBlock (SprkBlock block) {
-        __dropBlock (self, block.self);
+    native static long __loadDense (long self, String pathList, int rowSize);
+    public SprkDataset loadDense (String pathList, int rowSize) {
+        return new SprkDataset (__loadDense (self, pathList, rowSize));
     }
     /*
     Self test of this class.

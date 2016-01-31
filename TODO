@@ -1,0 +1,13 @@
+1. ctx creates a dataset
+  a) breaks input into blocks, assigns blocks to executors.
+  b) executor forwards block assignment to its workers.
+  c) executor forwards block assignment ACK to context.
+  d) ??? context waits until ACK received for each block.
+
+solve for (???)
+
+where I'm at now: all messages seem to be hooked up properly, it's a
+matter of how the context should handle all the subscriptions and how
+to wait on unordered ACKs for the block assigments. We essentially
+need the load_dense() function to block until an ACK received for each
+assigned block.

@@ -12,8 +12,6 @@ include_directories (${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2} src/native/inclu
 set (sprkjni_sources
     src/main/c/org_zeromq_sprk_SprkCtx.c
     src/main/c/org_zeromq_sprk_SprkDataset.c
-    src/main/c/org_zeromq_sprk_Descriptor.c
-    src/main/c/org_zeromq_sprk_Transformation.c
 )
 
 add_library (sprkjni SHARED ${sprkjni_sources})

@@ -17,9 +17,6 @@ public:
     //  Copy-construct to return the proper wrapped c types
     QSprkDataset (sprk_dataset_t *self, QObject *qObjParent = 0);
 
-    //  Creates a new sprk dataset from a set of input paths.
-    explicit QSprkDataset (QSprkCtx *context, const QString &pathList, QObject *qObjParent = 0);
-
     //  Destroy the sprk_dataset.
     ~QSprkDataset ();
 

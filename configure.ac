@@ -362,6 +362,26 @@ AM_CONDITIONAL(ON_ANDROID, test "x$sprk_on_android" = "xyes")
 AM_CONDITIONAL(INSTALL_MAN, test "x$sprk_install_man" = "xyes")
 AM_CONDITIONAL(BUILD_DOC, test "x$sprk_build_doc" = "xyes")
 
+# Check for sprk_broker intent
+AC_ARG_WITH([sprk_broker],
+    AS_HELP_STRING([--with-sprk_broker],
+        [Compile and install the sprk_broker program [default=yes].]),
+    [with_sprk_broker=$withval],
+    [with_sprk_broker=yes])
+
+AM_CONDITIONAL([WITH_SPRK_BROKER], [test x$with_sprk_broker != xno])
+AM_COND_IF([WITH_SPRK_BROKER], [AC_MSG_NOTICE([WITH_SPRK_BROKER defined])])
+
+# Check for sprk_executor intent
+AC_ARG_WITH([sprk_executor],
+    AS_HELP_STRING([--with-sprk_executor],
+        [Compile and install the sprk_executor program [default=yes].]),
+    [with_sprk_executor=$withval],
+    [with_sprk_executor=yes])
+
+AM_CONDITIONAL([WITH_SPRK_EXECUTOR], [test x$with_sprk_executor != xno])
+AM_COND_IF([WITH_SPRK_EXECUTOR], [AC_MSG_NOTICE([WITH_SPRK_EXECUTOR defined])])
+
 # Check for inprocess intent
 AC_ARG_WITH([inprocess],
     AS_HELP_STRING([--with-inprocess],
@@ -371,6 +391,36 @@ AC_ARG_WITH([inprocess],
 
 AM_CONDITIONAL([WITH_INPROCESS], [test x$with_inprocess != xno])
 AM_COND_IF([WITH_INPROCESS], [AC_MSG_NOTICE([WITH_INPROCESS defined])])
+
+# Check for outprocess intent
+AC_ARG_WITH([outprocess],
+    AS_HELP_STRING([--with-outprocess],
+        [Compile and install the outprocess program [default=yes].]),
+    [with_outprocess=$withval],
+    [with_outprocess=yes])
+
+AM_CONDITIONAL([WITH_OUTPROCESS], [test x$with_outprocess != xno])
+AM_COND_IF([WITH_OUTPROCESS], [AC_MSG_NOTICE([WITH_OUTPROCESS defined])])
+
+# Check for gendata intent
+AC_ARG_WITH([gendata],
+    AS_HELP_STRING([--with-gendata],
+        [Compile and install the gendata program [default=yes].]),
+    [with_gendata=$withval],
+    [with_gendata=yes])
+
+AM_CONDITIONAL([WITH_GENDATA], [test x$with_gendata != xno])
+AM_COND_IF([WITH_GENDATA], [AC_MSG_NOTICE([WITH_GENDATA defined])])
+
+# Check for topology intent
+AC_ARG_WITH([topology],
+    AS_HELP_STRING([--with-topology],
+        [Compile and install the topology program [default=yes].]),
+    [with_topology=$withval],
+    [with_topology=yes])
+
+AM_CONDITIONAL([WITH_TOPOLOGY], [test x$with_topology != xno])
+AM_COND_IF([WITH_TOPOLOGY], [AC_MSG_NOTICE([WITH_TOPOLOGY defined])])
 
 # Check for sprk_selftest intent
 AC_ARG_WITH([sprk_selftest],

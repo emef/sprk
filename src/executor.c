@@ -21,7 +21,6 @@ sprk_dataset. Delegates operations to its workers.
 */
 
 #include "sprk_classes.h"
-#include "sprk_block_manager.h"
 
 //  Structure of our actor
 
@@ -31,8 +30,10 @@ struct _executor_t {
     bool terminated;            //  Did caller ask us to quit?
     bool verbose;               //  Verbose logging enabled?
 
-    zsock_t *block_pull;
-    sprk_block_manager_t *block_manager;
+    zlist_t *workers;           // Contains all worker actors.
+    zlist_t *worker_lb;         // Contains available worker actors.
+    zsock_t *contexts;          // REQ for direct commands from context.
+    block_manager_t *block_manager;  // Block manager.
 };
 
 
@@ -48,13 +49,34 @@ executor_new (zsock_t *pipe, void *args)
     self->pipe = pipe;
     self->terminated = false;
 
-    self->block_pull = zsock_new_pull ("inproc://executors");
-    assert (self->block_pull);
+    const char *broker_uri = (char *) args;
+    printf ("[EXECUTOR] connecting to broker %s\n", broker_uri);
+    self->contexts = zsock_new_dealer (broker_uri);
+    assert (self->contexts);
 
-    self->block_manager = sprk_block_manager_new ();
+    self->block_manager = block_manager_new ();
     assert (self->block_manager);
 
-    self->poller = zpoller_new (self->pipe, self->block_pull, NULL);
+    self->workers = zlist_new ();
+    assert (self->workers);
+
+    self->worker_lb = zlist_new ();
+    assert (self->worker_lb);
+
+    int i;
+    for (i = 0; i < 2; i++) {
+        zactor_t *worker = zactor_new (block_worker_actor, self->block_manager);
+        zstr_send (worker, "START");
+        zsock_wait (worker);
+        assert (worker);
+        zlist_append (self->workers, worker);
+        zlist_append (self->worker_lb, worker);
+    }
+
+    self->poller = zpoller_new (
+        self->pipe,
+        self->contexts,
+        NULL);
 
     return self;
 }
@@ -70,8 +92,19 @@ executor_destroy (executor_t **self_p)
     if (*self_p) {
         executor_t *self = *self_p;
 
-        zsock_destroy (&self->block_pull);
-        sprk_block_manager_destroy (&self->block_manager);
+        zsock_destroy (&self->contexts);
+        block_manager_destroy (&self->block_manager);
+
+        zactor_t *worker = (zactor_t *) zlist_first (self->workers);
+        while (worker) {
+            zstr_send (worker, "STOP");
+            zsock_wait (worker);
+            zactor_destroy (&worker);
+            worker = (zactor_t *) zlist_next (self->workers);
+        }
+
+        zlist_destroy (&self->workers);
+        zlist_destroy (&self->worker_lb);
 
         //  Free object itself
         zpoller_destroy (&self->poller);
@@ -89,7 +122,8 @@ executor_start (executor_t *self)
 {
     assert (self);
 
-    //  TODO: Add startup actions
+    puts ("[EXECUTOR] start");
+    zstr_send (self->contexts, "READY");
 
     return 0;
 }
@@ -141,33 +175,33 @@ executor_recv_api (executor_t *self)
 }
 
 void
-executor_assign_block (executor_t *self, sprk_msg_t *msg)
+executor_handle_context_req (executor_t *self)
 {
-    sprk_msg_print (msg);
-    const char *block_id = sprk_msg_block_id (msg);
-    sprk_descriptor_t *descriptor = sprk_descriptor_new (
-        sprk_msg_descriptor_uri (msg), sprk_msg_descriptor_offset (msg),
-        sprk_msg_descriptor_length (msg), sprk_msg_descriptor_row_size (msg));
-    sprk_block_t *block = sprk_block_new (descriptor, zlist_new());
-    sprk_blockdata_t *blockdata = sprk_block_manager_read_and_store_block (
-        self->block_manager, block_id, &block);
+    puts ("[EXECUTOR] forwarding request to worker");
 
-    printf ("looked up blockdata in manager (%s)\n",
-            (blockdata != NULL) ? "true" : "false");
+    // Grab the next available worker, adding it to the poller
+    // so we know when it has completed its work.
+    zactor_t *worker = (zactor_t *) zlist_pop (self->worker_lb);
+    zpoller_add (self->poller, worker);
+
+    assert (worker);
+    zmsg_t *msg = zmsg_recv (self->contexts);
+    zstr_sendm (worker, "WORK");
+    zmsg_send (&msg, worker);
+
+    // Executor ready for another task.
+    zstr_send (self->contexts, "READY");
 }
 
-
 void
-executor_handle_block_pull (executor_t *self)
+executor_handle_worker_req (executor_t *self, zactor_t *worker)
 {
-    sprk_msg_t *msg = sprk_msg_new ();
-    int rc = sprk_msg_recv (msg, self->block_pull);
-    assert (rc == 0);
+    puts ("[EXECUTOR] got message from a worker");
+    zlist_append (self->worker_lb, worker);
 
-    if (sprk_msg_id (msg) == SPRK_MSG_ASSIGN_BLOCK)
-        executor_assign_block (self, msg);
-
-    sprk_msg_destroy (&msg);
+    // Forward along to context.
+    zmsg_t *msg = zmsg_recv (worker);
+    zmsg_send (&msg, self->contexts);
 }
 
 //  --------------------------------------------------------------------------
@@ -176,7 +210,7 @@ executor_handle_block_pull (executor_t *self)
 void
 executor_actor (zsock_t *pipe, void *args)
 {
-    executor_t * self = executor_new (pipe, args);
+    executor_t *self = executor_new (pipe, args);
     if (!self)
         return;          //  Interrupted
 
@@ -184,12 +218,21 @@ executor_actor (zsock_t *pipe, void *args)
     zsock_signal (self->pipe, 0);
 
     while (!self->terminated) {
-       zsock_t *which = (zsock_t *) zpoller_wait (self->poller, 0);
+       zsock_t *which = (zsock_t *) zpoller_wait (self->poller, 10);
        if (which == self->pipe)
           executor_recv_api (self);
        else
-       if (which == self->block_pull)
-           executor_handle_block_pull (self);
+       if (which == self->contexts)
+           executor_handle_context_req (self);
+       else
+       if (which != NULL)
+           executor_handle_worker_req (self, (zactor_t *) which);
+       else
+       if (zpoller_terminated (self->poller))
+           break;
+
+       if (zlist_size (self->worker_lb) == 0)
+           zpoller_remove (self->poller, self-> contexts);
     }
 
     executor_destroy (&self);

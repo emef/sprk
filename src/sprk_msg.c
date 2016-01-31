@@ -267,6 +267,10 @@ sprk_msg_recv (sprk_msg_t *self, zsock_t *input)
             GET_NUMBER4 (self->descriptor_row_size);
             break;
 
+        case SPRK_MSG_BLOCK_ASSIGNED:
+            GET_STRING (self->block_id);
+            break;
+
         default:
             zsys_warning ("sprk_msg: bad message ID");
             goto malformed;
@@ -305,6 +309,9 @@ sprk_msg_send (sprk_msg_t *self, zsock_t *output)
             frame_size += 8;            //  descriptor_length
             frame_size += 4;            //  descriptor_row_size
             break;
+        case SPRK_MSG_BLOCK_ASSIGNED:
+            frame_size += 1 + strlen (self->block_id);
+            break;
     }
     //  Now serialize message into the frame
     zmq_msg_t frame;
@@ -321,6 +328,10 @@ sprk_msg_send (sprk_msg_t *self, zsock_t *output)
             PUT_NUMBER8 (self->descriptor_offset);
             PUT_NUMBER8 (self->descriptor_length);
             PUT_NUMBER4 (self->descriptor_row_size);
+            break;
+
+        case SPRK_MSG_BLOCK_ASSIGNED:
+            PUT_STRING (self->block_id);
             break;
 
     }
@@ -346,6 +357,11 @@ sprk_msg_print (sprk_msg_t *self)
             zsys_debug ("    descriptor_offset=%ld", (long) self->descriptor_offset);
             zsys_debug ("    descriptor_length=%ld", (long) self->descriptor_length);
             zsys_debug ("    descriptor_row_size=%ld", (long) self->descriptor_row_size);
+            break;
+
+        case SPRK_MSG_BLOCK_ASSIGNED:
+            zsys_debug ("SPRK_MSG_BLOCK_ASSIGNED:");
+            zsys_debug ("    block_id='%s'", self->block_id);
             break;
 
     }
@@ -397,6 +413,9 @@ sprk_msg_command (sprk_msg_t *self)
     switch (self->id) {
         case SPRK_MSG_ASSIGN_BLOCK:
             return ("ASSIGN_BLOCK");
+            break;
+        case SPRK_MSG_BLOCK_ASSIGNED:
+            return ("BLOCK_ASSIGNED");
             break;
     }
     return "?";
@@ -552,6 +571,18 @@ sprk_msg_test (bool verbose)
         assert (sprk_msg_descriptor_offset (self) == 123);
         assert (sprk_msg_descriptor_length (self) == 123);
         assert (sprk_msg_descriptor_row_size (self) == 123);
+    }
+    sprk_msg_set_id (self, SPRK_MSG_BLOCK_ASSIGNED);
+
+    sprk_msg_set_block_id (self, "Life is short but Now lasts for ever");
+    //  Send twice
+    sprk_msg_send (self, output);
+    sprk_msg_send (self, output);
+
+    for (instance = 0; instance < 2; instance++) {
+        sprk_msg_recv (self, input);
+        assert (sprk_msg_routing_id (self));
+        assert (streq (sprk_msg_block_id (self), "Life is short but Now lasts for ever"));
     }
 
     sprk_msg_destroy (&self);

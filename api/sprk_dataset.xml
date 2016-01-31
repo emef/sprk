@@ -3,15 +3,6 @@
 
   <include filename = "license.xml" />
 
-  <constructor>
-    Creates a new sprk dataset from a set of input paths.
-
-    <argument name = "context" type = "sprk_ctx" />
-    <argument name = "path list" type = "string">
-      Comma-separated list of path URIs (including protocol).
-    </argument>
-  </constructor>
-
   <destructor>
   </destructor>
 

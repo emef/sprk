@@ -12,21 +12,11 @@ qsprk-uselib:!qsprk-buildlib {
     HEADERS       += \
                      $$PWD/qsprk.h \
                      $$PWD/qsprkctx.h \
-                     $$PWD/qsprkdataset.h \
-                     $$PWD/qsprkblock.h \
-                     $$PWD/qsprkblockdata.h \
-                     $$PWD/qsprkdescriptor.h \
-                     $$PWD/qsprktransform.h \
-                     $$PWD/qsprkblockmanager.h
+                     $$PWD/qsprkdataset.h
 
     SOURCES       += \
                      $$PWD/qsprkctx.cpp \
-                     $$PWD/qsprkdataset.cpp \
-                     $$PWD/qsprkblock.cpp \
-                     $$PWD/qsprkblockdata.cpp \
-                     $$PWD/qsprkdescriptor.cpp \
-                     $$PWD/qsprktransform.cpp \
-                     $$PWD/qsprkblockmanager.cpp
+                     $$PWD/qsprkdataset.cpp
 }
 
 win32 {

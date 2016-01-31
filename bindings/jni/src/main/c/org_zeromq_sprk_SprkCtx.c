@@ -11,11 +11,13 @@
 #include "../../native/include/org_zeromq_sprk_SprkCtx.h"
 
 JNIEXPORT jlong JNICALL
-Java_org_zeromq_sprk_SprkCtx__1_1new (JNIEnv *env, jclass c)
+Java_org_zeromq_sprk_SprkCtx__1_1new (JNIEnv *env, jclass c, jstring broker_uri)
 {
+    char *broker_uri_ = (char *) (*env)->GetStringUTFChars (env, broker_uri, NULL);
     //  Disable CZMQ signal handling; allow Java to deal with it
     zsys_handler_set (NULL);
-    jlong new_ = (jlong) (intptr_t) sprk_ctx_new ();
+    jlong new_ = (jlong) (intptr_t) sprk_ctx_new (broker_uri_);
+    (*env)->ReleaseStringUTFChars (env, broker_uri, broker_uri_);
     return new_;
 }
 
@@ -25,18 +27,13 @@ Java_org_zeromq_sprk_SprkCtx__1_1destroy (JNIEnv *env, jclass c, jlong self)
     sprk_ctx_destroy ((sprk_ctx_t **) &self);
 }
 
-JNIEXPORT jstring JNICALL
-Java_org_zeromq_sprk_SprkCtx__1_1assignBlock (JNIEnv *env, jclass c, jlong self, jlong block)
+JNIEXPORT jlong JNICALL
+Java_org_zeromq_sprk_SprkCtx__1_1loadDense (JNIEnv *env, jclass c, jlong self, jstring path_list, jint row_size)
 {
-    char *assign_block_ = (char *) sprk_ctx_assign_block ((sprk_ctx_t *) (intptr_t) self, (sprk_block_t *) (intptr_t) block);
-    jstring return_string_ = (*env)->NewStringUTF (env, assign_block_);
-    return return_string_;
-}
-
-JNIEXPORT void JNICALL
-Java_org_zeromq_sprk_SprkCtx__1_1dropBlock (JNIEnv *env, jclass c, jlong self, jlong block)
-{
-    sprk_ctx_drop_block ((sprk_ctx_t *) (intptr_t) self, (sprk_block_t *) (intptr_t) block);
+    char *path_list_ = (char *) (*env)->GetStringUTFChars (env, path_list, NULL);
+    jlong load_dense_ = (jlong) (intptr_t) sprk_ctx_load_dense ((sprk_ctx_t *) (intptr_t) self, path_list_, (uint32_t) row_size);
+    (*env)->ReleaseStringUTFChars (env, path_list, path_list_);
+    return load_dense_;
 }
 
 JNIEXPORT void JNICALL

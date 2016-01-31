@@ -9,15 +9,11 @@
 
 
 ///
-//  Assign a block to the executor pool, giving it a unique ID.
-const QString QmlSprkCtx::assignBlock (QmlSprkBlock *block) {
-    return QString (sprk_ctx_assign_block (self, block->self));
-};
-
-///
-//  Remove a block from the executor pool.
-void QmlSprkCtx::dropBlock (QmlSprkBlock *block) {
-    sprk_ctx_drop_block (self, block->self);
+//  Loads data located in given paths distributed across executors.
+QmlSprkDataset *QmlSprkCtx::loadDense (const QString &pathList, uint32_t rowSize) {
+    QmlSprkDataset *retQ_ = new QmlSprkDataset ();
+    retQ_->self = sprk_ctx_load_dense (self, pathList.toUtf8().data(), rowSize);
+    return retQ_;
 };
 
 
@@ -35,9 +31,9 @@ void QmlSprkCtxAttached::test (bool verbose) {
 ///
 //  Creates a new sprk context which facilitates communication with
 //  known executors.                                               
-QmlSprkCtx *QmlSprkCtxAttached::construct () {
+QmlSprkCtx *QmlSprkCtxAttached::construct (const QString &brokerUri) {
     QmlSprkCtx *qmlSelf = new QmlSprkCtx ();
-    qmlSelf->self = sprk_ctx_new ();
+    qmlSelf->self = sprk_ctx_new (brokerUri.toUtf8().data());
     return qmlSelf;
 };
 

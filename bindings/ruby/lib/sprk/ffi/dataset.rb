@@ -73,16 +73,6 @@ module Sprk
         @finalizer = nil
       end
 
-      # Creates a new sprk dataset from a set of input paths.
-      # @param context [Ctx, #__ptr]
-      # @param path_list [String, #to_s, nil]
-      # @return [Sprk::Dataset]
-      def self.new(context, path_list)
-        context = context.__ptr if context
-        ptr = ::Sprk::FFI.sprk_dataset_new(context, path_list)
-        __new ptr
-      end
-
       # Destroy the sprk_dataset.
       #
       # @return [void]
