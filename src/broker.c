@@ -153,17 +153,19 @@ broker_run (broker_t *self)
             zmsg_t *msg = zmsg_recv (self->executors);
             assert (msg);
 
-            zframe_t *context_or_ready = zmsg_first (msg);
-            char *context_addr = zframe_strdup (context_or_ready);
+            zframe_t *executor_addr = zmsg_pop (msg);
+            assert (executor_addr);
+
+            zframe_t *ctx_or_ready = zmsg_pop (msg);
+            char *context_addr = zframe_strdup (ctx_or_ready);
             if (strcmp (context_addr, "READY") != 0) {
                 // Forward the response to the correct context addr.
                 // [context] [0] [response]
+                zmsg_prepend (msg, &ctx_or_ready);
                 zmsg_send (&msg, self->contexts);
             } else {
                 // Got a READY message
                 // Put the executor ID back in the available queue
-                zframe_t *executor_addr = zmsg_pop (msg);
-                assert (executor_addr);
                 zlist_append (self->executor_lb, executor_addr);
 
                 // There are now an executor available.
