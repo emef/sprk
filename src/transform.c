@@ -20,7 +20,7 @@
 
 #include "sprk_classes.h"
 
-struct transform_t {
+struct _transform_t {
     int a;
 };
 
