@@ -1,8 +1,6 @@
 <class name = "sprk_dataset" >
   Distributed dataset with fixed set of operations and transformations.
 
-  <include filename = "../license.xml" />
-
   <destructor>
   </destructor>
 
