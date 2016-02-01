@@ -3,6 +3,8 @@
 int
 main (int argc, char *argv[])
 {
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     char executors_uri[256];
     if (argc == 3)
         snprintf (executors_uri, 256, "tcp://%s:%s", argv[1], argv[2]);
