@@ -24,6 +24,23 @@ struct _transform_t {
     int a;
 };
 
+//  @interface
+//  Creates a new transformation.
+transform_t *
+transform_new (void)
+{
+    return NULL;
+}
+
+//  Destroy the transform.
+void
+transform_destroy (transform_t **self_p)
+{
+
+}
+
+
+
 //  --------------------------------------------------------------------------
 //  Self test of this class.
 
