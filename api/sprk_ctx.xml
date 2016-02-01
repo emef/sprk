@@ -1,7 +1,7 @@
 <class name = "sprk_ctx" >
   sprk context; public API to work with distributed datasets.
 
-  <include filename = "license.xml" />
+  <include filename = "../license.xml" />
 
   <constructor>
     Creates a new sprk context which facilitates communication with
