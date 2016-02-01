@@ -121,9 +121,9 @@ endif #WITH_SPRK_SELFTEST
 # Install api files into /usr/local/share/zproject
 apidir = @datadir@/zproject/sprk
 dist_api_DATA = \
-    api/license.xml \
+    api/../license.xml \
     api/sprk_ctx.xml \
-    api/license.xml \
+    api/../license.xml \
     api/sprk_dataset.xml
 
 # define custom target for all products of /src
