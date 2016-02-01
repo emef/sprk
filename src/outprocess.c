@@ -3,9 +3,11 @@
 int
 main(int argc, char* argv[])
 {
-    assert (argc == 2);
     char contexts_uri[256];
-    snprintf (contexts_uri, 256, "tcp://127.0.0.1:%s", argv[1]);
+    if (argc == 3)
+        snprintf (contexts_uri, 256, "tcp://%s:%s", argv[1], argv[2]);
+    else
+        snprintf (contexts_uri, 256, "tcp://127.0.0.1:%s", argv[1]);
 
     srand(time(NULL));
 
