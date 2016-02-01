@@ -44,7 +44,7 @@ block_worker_new (zsock_t *pipe, void *args)
     block_worker_t *self = (block_worker_t *) zmalloc (sizeof (block_worker_t));
     assert (self);
 
-    self->block_manager = args;
+    self->block_manager = (block_manager_t *) args;
     assert (self->block_manager);
 
     // Connect workers PULL socket.
