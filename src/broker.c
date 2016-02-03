@@ -138,7 +138,6 @@ broker_send_to_executor (broker_t *self, zmsg_t *msg)
 {
     int rc = -1;
     while (rc != 0 && zlist_size (self->executor_lb)) {
-        // Executor must be available if contexts is polled on.
         zframe_t *executor_addr = (zframe_t *) zlist_pop (self->executor_lb);
         zmsg_prepend (msg, &executor_addr);
 
@@ -168,6 +167,9 @@ broker_check_backlog (broker_t *self)
 void
 broker_run (broker_t *self)
 {
+    // Only accepting requests when executors available.
+    bool accepting_requests = false;
+
     while (1) {
         zsock_t *which = (zsock_t *) zpoller_wait (self->poller, 10);
         if (which == self->contexts) {
@@ -181,8 +183,10 @@ broker_run (broker_t *self)
                 zlist_append (self->backlog, msg);
 
             // Remove contexts from poller if no executors
-            if (zlist_size (self->executor_lb) == 0)
+            if (zlist_size (self->executor_lb) == 0) {
                 zpoller_remove (self->poller, self->contexts);
+                accepting_requests = false;
+            }
         }
         else if (which == self->executors) {
             puts ("[BROKER] which == self->executors");
@@ -211,9 +215,12 @@ broker_run (broker_t *self)
                 // so check and assign backlog tasks.
                 broker_check_backlog (self);
 
-                // There are now an executor available.
-                if (zlist_size (self->executor_lb) == 1)
+                // If we now have executors but not accepting requests,
+                // then start polling on the frontend socket.
+                if (!accepting_requests && zlist_size (self->executor_lb)) {
                     zpoller_add (self->poller, self->contexts);
+                    accepting_requests = true;
+                }
 
                 // Destroy the READY message.
                 zmsg_destroy (&msg);
