@@ -39,6 +39,7 @@ struct _broker_t {
     zsock_t *executors;
     zpoller_t *poller;
     zlist_t *executor_lb;
+    zlist_t *backlog;
 };
 
 broker_t *
@@ -54,6 +55,7 @@ broker_new (const char *contexts_uri, const char *executors_uri)
     printf ("[BROKER] binding to backend %s\n", executors_uri);
     self->executors = zsock_new_router (executors_uri);
     assert (self->executors);
+    zsock_set_router_mandatory (self->executors, true);
 
     // Only poll on executors until we have executors available.
     self->poller = zpoller_new (self->executors, NULL);
@@ -61,6 +63,9 @@ broker_new (const char *contexts_uri, const char *executors_uri)
 
     self->executor_lb = zlist_new ();
     assert (self->executor_lb);
+
+    self->backlog = zlist_new ();
+    assert (self->backlog);
 
     return self;
 }
@@ -139,7 +144,12 @@ broker_run (broker_t *self)
             zmsg_prepend (msg, &executor_addr);
 
             // [executor] [context] [request]
-            zmsg_send (&msg, self->executors);
+            int rc = zmsg_send (&msg, self->executors);
+            if (rc != 0) {
+                zframe_t *addr_discard = zmsg_pop (msg);
+                zframe_destroy (&addr_discard);
+                zlist_append (self->backlog, msg);
+            }
 
             // Remove contexts from poller if no executors
             if (zlist_size (self->executor_lb) == 0)
@@ -165,8 +175,23 @@ broker_run (broker_t *self)
                 zmsg_send (&msg, self->contexts);
             } else {
                 // Got a READY message
-                // Put the executor ID back in the available queue
-                zlist_append (self->executor_lb, executor_addr);
+
+                // Messages in backlog have precedence and should be
+                // handled right away.
+                if (zlist_size (self->backlog)) {
+                    zmsg_t *backlog_msg = zlist_pop (self->backlog);
+                    zmsg_prepend (backlog_msg, &executor_addr);
+                    int rc = zmsg_send (&backlog_msg, self->executors);
+                    if (rc != 0) {
+                        zframe_t *addr_discard = zmsg_pop (backlog_msg);
+                        zframe_destroy (&addr_discard);
+                        zlist_append (self->backlog, backlog_msg);
+                    }
+                }
+                else {
+                    // Put the executor ID back in the available queue
+                    zlist_append (self->executor_lb, executor_addr);
+                }
 
                 // There are now an executor available.
                 if (zlist_size (self->executor_lb) == 1)
