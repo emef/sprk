@@ -81,7 +81,10 @@ broker_destroy (broker_t **self_p)
         zsock_destroy (&self->contexts);
         zsock_destroy (&self->executors);
         zpoller_destroy (&self->poller);
+
+        // TODO: delete contents of list.
         zlist_destroy (&self->executor_lb);
+        zlist_destroy (&self->backlog);
 
         //  Free object itself
         free (self);
@@ -127,6 +130,41 @@ broker_run_in_thread (broker_t **self_p)
     return broker_thread;
 }
 
+// Send a message to the next available executor. Will attempt
+// to send to all available executors until send succeeds, or
+// returns -1 if all fail.
+int
+broker_send_to_executor (broker_t *self, zmsg_t *msg)
+{
+    int rc = -1;
+    while (rc != 0 && zlist_size (self->executor_lb)) {
+        // Executor must be available if contexts is polled on.
+        zframe_t *executor_addr = (zframe_t *) zlist_pop (self->executor_lb);
+        zmsg_prepend (msg, &executor_addr);
+
+        // [executor] [context] [request]
+        rc = zmsg_send (&msg, self->executors);
+        if (rc != 0) {
+            zframe_t *addr_discard = zmsg_pop (msg);
+            zframe_destroy (&addr_discard);
+        }
+    }
+
+    return rc;
+}
+
+// Distribute all backlog messages while are workers available.
+// Failed-to-send messages are put back in the backlog.
+void
+broker_check_backlog (broker_t *self)
+{
+    while (zlist_size (self->backlog) && zlist_size (self->executor_lb)) {
+        zmsg_t *backlog_msg = zlist_pop (self->backlog);
+        if (0 != broker_send_to_executor (self, backlog_msg))
+            zlist_append (self->backlog, backlog_msg);
+    }
+}
+
 void
 broker_run (broker_t *self)
 {
@@ -134,22 +172,13 @@ broker_run (broker_t *self)
         zsock_t *which = (zsock_t *) zpoller_wait (self->poller, 10);
         if (which == self->contexts) {
             puts ("[BROKER] which == self->contexts");
-            // Executor must be available if contexts is polled on.
-            zframe_t *executor_addr = (zframe_t *) zlist_pop (self->executor_lb);
 
             // [context] [request]
             zmsg_t *msg = zmsg_recv (self->contexts);
             assert (msg);
 
-            zmsg_prepend (msg, &executor_addr);
-
-            // [executor] [context] [request]
-            int rc = zmsg_send (&msg, self->executors);
-            if (rc != 0) {
-                zframe_t *addr_discard = zmsg_pop (msg);
-                zframe_destroy (&addr_discard);
+            if (0 != broker_send_to_executor (self, msg))
                 zlist_append (self->backlog, msg);
-            }
 
             // Remove contexts from poller if no executors
             if (zlist_size (self->executor_lb) == 0)
@@ -175,23 +204,12 @@ broker_run (broker_t *self)
                 zmsg_send (&msg, self->contexts);
             } else {
                 // Got a READY message
+                // Put the executor ID back in the available queue
+                zlist_append (self->executor_lb, executor_addr);
 
-                // Messages in backlog have precedence and should be
-                // handled right away.
-                if (zlist_size (self->backlog)) {
-                    zmsg_t *backlog_msg = zlist_pop (self->backlog);
-                    zmsg_prepend (backlog_msg, &executor_addr);
-                    int rc = zmsg_send (&backlog_msg, self->executors);
-                    if (rc != 0) {
-                        zframe_t *addr_discard = zmsg_pop (backlog_msg);
-                        zframe_destroy (&addr_discard);
-                        zlist_append (self->backlog, backlog_msg);
-                    }
-                }
-                else {
-                    // Put the executor ID back in the available queue
-                    zlist_append (self->executor_lb, executor_addr);
-                }
+                // We know at least one executor is now available,
+                // so check and assign backlog tasks.
+                broker_check_backlog (self);
 
                 // There are now an executor available.
                 if (zlist_size (self->executor_lb) == 1)
